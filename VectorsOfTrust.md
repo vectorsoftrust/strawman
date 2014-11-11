@@ -36,13 +36,13 @@ This document defines a mechanism for describing and signaling those aspects tha
 In this document, the key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL"
 are to be interpreted as described in BCP 14, RFC 2119 {{RFC2119}}.
 
-# Introduction
+# Introduction	{#Introduction}
 
 This document defines a mechanism for describing and signaling those aspects that go into a determination of trust placed in a digital identity transaction.
 
 This document is being discussed on the IETF non-WG Vectors of Trust (vot) list: https://www.ietf.org/mailman/listinfo/vot
 
-## Background
+## Background and Motivation {#Background}
 
 The NIST special publication 800-63 defines a linear scale "Level of Assurance" measure that combines multiple attributes about an identity transaction into a single measure of the level of trust a relying party should place on an identity transaction. 
 
@@ -50,39 +50,29 @@ Over the last few years several trust frameworks profiling SP 800-63 have emerge
 
 This work seeks to decompose the elements of the measure in a way that they can be independently communicated from an Identity Provider to a Relying Party, making comparison between trust frameworks easier.
 
-### The Abstract Identity Architecture
+### An Identity Model {#Model}
 
-This document assumes the following model:
+This document assumes the following model for identity. The authors acknowledges that this is a partial model and only serves as a point of reference for this document.
 
 `The identity subject` (aka user) is associated with an `identity provider` which acts as a trusted 3rd party on behalf of the user wrt to a `relying party` by making `identity assertions` about the user to the relying party. 
 
-The real-world person represented by the identity subject is in possession of a (cryptographic) `credential` bound to the user by (an agent of) identity provider in such a way that the binding between the credential and the real-world user is a representation of the `identity proofing` process performed by the (agent of) the identity provider to verify the identity of the real-world person.
+The real-world person represented by the identity subject is in possession of a (cryptographic) primary `credential` bound to the user by (an agent of) identity provider in such a way that the binding between the credential and the real-world user is a representation of the `identity proofing` process performed by the (agent of) the identity provider to verify the identity of the real-world person.
 
-### Component Architecture
+### Component Architecture {#Architecture}
 
 The term *Vectors of Trust* is based on the mathematical construct of a `Vector`, which is defined as an item composed of multiple independent `scalar` values. A vector is a set of coordinates that specifies a point in a (multi-dimensional) cartesian coordinate space. The reader is encouraged to think of a vector of trust as a point in a coordinate system, in the simples form (described below) a 3 dimensional space that is intended to be a recognizable, if somewhat elided, model of identity subject trust.
 
 An important goal for this work is to balance the need for simplicity (particularly on the part of the relying party) with the need for expressiveness. As such, this vector construct is designed to be composable and extensible.
 
-#### Composability
-
 All components of the vector construct must be orthogonal in the sense that no aspect of a component overlap an aspect of another component.
 
-#### Extensibility
-
-The vector construct support two forms of extensibility: 
-* add a component that is orthogonal (in the sense of the previous section) to all other components. 
-* describe an aspect of an existing component which can be elided from the component without affecting other aspects.
-
-An example of the first type might be "liability limits", a measure of how much liability the identity provider or relying party is willing to accept in relationship with the transaction or "incident response", a measure of how the identity provider or relying party is willing to handle a request to share information related to security incidents.
-
-#### Core Components
+## Core Components {#Core}
 
 This specification defines three orthogonal components: *identity proofing*, *credential binding*, and *assertion presentation*. These dimentions (as described below) are intentionally elided and SHOULD be combined with with other information to form trust frameworks can can be used as a basis for audits of identity providers and relying parties.
 
 We hope and expect the owners of such trust frameworks to consider this specification as a baseline on which to build.
 
-### Identity Proofing
+### Identity Proofing {#IPV}
 
 The Identity Proofing dimension defines, overall, how strongly the set of identity attributes have been verified and vetted, and how strongly they are tied to a particular credential set. In other words, this dimension describes how likely it is that a given digital identity corresponds to a particular (real-world) identity subject.
 
@@ -95,7 +85,7 @@ This dimension shall be represented by the "P" demarcator and one of the followi
 * 2: Identity has been proofed either in person or remotely using trusted mechanisms (such as social proofing)
 * 3: There is a legal or contractual relationship between the identity provider and the identified party (such as signed/notarized documents, employment records)
 
-### Credential Binding
+### Credential Management {#CM}
 
 Below we use the term "credential" to denote the credential used by the identity subject to authenticate to the identity provider.
 
@@ -113,7 +103,7 @@ This dimension shall be represented by the "C" demarcator and one of the followi
 Note that multiple factors will need to be communicated here, often simultaneously when MFA is used. Also note that there are many, many forms of primary credential out there, and that each one should **NOT** be given a distinct value in this list.
 
 
-### Assertion Presentation
+### Assertion Presentation {#AP}
 
 The Assertion Presentation dimension defines how well the given digital identity can be communicated across the network without information leaking to unintended parties, and without spoofing. In other words, this dimension describes how likely it is that a given digital identity asserted was actually asserted by a given identity provider for a given transaction.
 
@@ -125,13 +115,13 @@ This dimension shall be represented by the "A" demarcator and one of the followi
 * 3: Token encrypted to the relying partys key and audience protected
 
 
-## Combining the dimensions
+## Combining Components {#Combining}
 
 All three of these dimensions (and others, as they are defined in extension work) can be combined into a single vector that can be communicated across the wire.
 
 It is vitally important that when doing such communication of the vector that the components of the vector themselves always be individually available and that no attempt is made to "collapse" the vector into a single value without also presenting the constituent dimensions as well.
 
-### Communicating and processing the vector
+### On the Wire Representation {#Representation}
 
 The vector shall be represented as a colon-separated list of vector components, such as:
 
@@ -139,7 +129,7 @@ P1:C3:A2
 
 Which translates to pseudonymous, proof of shared key, signed back-channel verified token.
 
-### In OpenID Connect
+### In OpenID Connect {#OpenIDC}
 
 The client can request a set of acceptable VoT values with the "amr" claim request. The server will respond with the "acr" claim containing the vector value in the ID token:
 
@@ -151,7 +141,7 @@ The client can request a set of acceptable VoT values with the "amr" claim reque
 }
 ~~~~~~~~~~
 
-### In SAML
+### In SAML {#SAML}
 
 In SAML a VoT vector is communicated as an AuthenticationContextClassRef, a sample definition of which might look something like this:
 
@@ -185,15 +175,15 @@ In SAML a VoT vector is communicated as an AuthenticationContextClassRef, a samp
 {: #accref title="SAML AuthnContextClassRef Example" }
  
 
-## Discovery and verification of IdP aspects
+## Discovery and Verification  {#DandV}
 
 There are many aspects of the trustworthiness of an IdP that will not vary on a per-transaction basis, but instead influence the trust placed in the values
 
-### Operational Requirements
+### Operational Requirements {#OR}
 
 Operational management considerations such as controlled access to server clusters and disaster recovery will be accessible from a .well-known location based on the IdP's issuer URL in machine-readable format.
 
-### Trustmark
+### Trustmark {#TM}
 
 The trustmark conveys the root of trustworthiness about the claims and assertions made by the IdP. The IdP will make its trustmark available from a .well-known location based on its issuer URL, such as the openid-configuration document:
 
