@@ -66,6 +66,8 @@ An important goal for this work is to balance the need for simplicity (particula
 
 All components of the vector construct must be orthogonal in the sense that no aspect of a component overlap an aspect of another component.
 
+The values assigned to each component of a vector is sometimes written as an ordinal number (eg an integer) but MUST NOT in general be interpreted as having inherent order among other values assigned to the same or other components in the vector space. In other words, 1 is different from 2, but it is dangerous to assume that 2 is "more" (better) than 1.
+
 ## Core Components {#Core}
 
 This specification defines three orthogonal components: *identity proofing*, *credential binding*, and *assertion presentation*. These dimentions (as described below) are intentionally elided and SHOULD be combined with with other information to form trust frameworks can can be used as a basis for audits of identity providers and relying parties.
