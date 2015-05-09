@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+<?rfc toc="yes"?>
+<?rfc tocompact="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc tocindent="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<rfc category="std" docName="draft-richer-vectors-of-trust-00"
+     ipr="trust200902">
+  <front>
+    <title abbrev="vectors-of-trust">Vectors of Trust</title>
+
+    <author fullname="Justin Richer" initials="J." role="editor"
+            surname="Richer">
+      <organization/>
+
+      <address>
+        <email>ietf@justin.richer.org</email>
+      </address>
+    </author>
+
+    <date day="21" month="April" year="2015"/>
+
+    <abstract>
+      <t>This document defines a mechanism for describing and signaling those
+      aspects that go into a determination of trust placed in a digital
+      identity transaction.</t>
+    </abstract>
+
+    <note title="Requirements Language">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+      "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+      document are to be interpreted as described in <xref
+      target="RFC2119">RFC 2119</xref>.</t>
+    </note>
+  </front>
+
+  <middle>
+    <section anchor="Introduction" title="Introduction">
+      <t>This document defines a mechanism for describing and signaling those
+      aspects that go into a determination of trust placed in a digital
+      identity transaction.</t>
+    </section>
+
+    <section anchor="Background" title="Background and Motivation">
+      <t> The NIST special publication 800-63 defines a linear scale "Level of
+      Assurance" measure that combines multiple attributes about an identity
+      transaction into a single measure of the level of trust a relying party
+      should place on an identity transaction. </t>
+
+      <t>Over the last few years several trust frameworks profiling SP 800-63
+      have emerged and as the number of such profiles grow, interoperability
+      becomes increasingly problematic. Interoperability between trust
+      frameworks is critical in order to support transactions between identity
+      providers and relying parties that are part of multiple trust
+      frameworks. </t>
+
+      <t>This work seeks to decompose the elements of the measure in a way
+      that they can be independently communicated from an Identity Provider to
+      a Relying Party, making comparison between trust frameworks easier.</t>
+
+      <section anchor="Model" title="An Identity Model">
+        <t>This document assumes the following model for identity. The authors
+        acknowledges that this is a partial model and only serves as a point
+        of reference for this document. </t>
+
+        <t>The identity subject (aka user) is associated with an identity
+        provider which acts as a trusted 3rd party on behalf of the user wrt
+        to a relying party by making identity assertions about the user to the
+        relying party. </t>
+
+        <t>The real-world person represented by the identity subject is in
+        possession of a (cryptographic) primary credential bound to the user
+        by (an agent of) identity provider in such a way that the binding
+        between the credential and the real-world user is a representation of
+        the identity proofing process performed by the (agent of) the identity
+        provider to verify the identity of the real-world person.</t>
+      </section>
+
+      <section anchor="Architecture" title="Component Architecture">
+        <t>The term Vectors of Trust is based on the mathematical construct of
+        a Vector, which is defined as an item composed of multiple independent
+        scalar values. A vector is a set of coordinates that specifies a point
+        in a (multi-dimensional) cartesian coordinate space. The reader is
+        encouraged to think of a vector of trust as a point in a coordinate
+        system, in the simples form (described below) a 3 dimensional space
+        that is intended to be a recognizable, if somewhat elided, model of
+        identity subject trust. </t>
+
+        <t>An important goal for this work is to balance the need for
+        simplicity (particularly on the part of the relying party) with the
+        need for expressiveness. As such, this vector construct is designed to
+        be composable and extensible. </t>
+
+        <t>All components of the vector construct must be orthogonal in the
+        sense that no aspect of a component overlap an aspect of another
+        component. </t>
+
+        <t>The values assigned to each component of a vector is sometimes
+        written as an ordinal number (eg an integer) but MUST NOT in general
+        be interpreted as having inherent order among other values assigned to
+        the same or other components in the vector space. In other words, 1 is
+        different from 2, but it is dangerous to assume that 2 is "more"
+        (better) than 1.</t>
+      </section>
+    </section>
+
+    <section anchor="Components" title="Core components">
+      <t>This specification defines three orthogonal components: identity
+      proofing, credential binding, and assertion presentation. These
+      dimentions (as described below) are intentionally elided and SHOULD be
+      combined with with other information to form trust frameworks can can be
+      used as a basis for audits of identity providers and relying parties.
+      </t>
+
+      <t>We hope and expect the owners of such trust frameworks to consider
+      this specification as a baseline on which to build.</t>
+
+      <section anchor="IdentityProofing" title="Identity Proofing">
+        <t>The Identity Proofing dimension defines, overall, how strongly the
+        set of identity attributes have been verified and vetted, and how
+        strongly they are tied to a particular credential set. In other words,
+        this dimension describes how likely it is that a given digital
+        identity corresponds to a particular (real-world) identity subject.
+        </t>
+
+        <t>This dimension shall be represented by the "P" demarcator and one
+        of the following numeric values: </t>
+
+        <t><list style="hanging">
+            <t hangText="0">No proofing is done, data is not guaranteed to be
+            persistent across sessions</t>
+
+            <t hangText="1">Attributes are self-asserted but consistent over
+            time, potentially pseudonymous</t>
+
+            <t hangText="2">Identity has been proofed either in person or
+            remotely using trusted mechanisms (such as social proofing)</t>
+
+            <t hangText="3">There is a legal or contractual relationship
+            between the identity provider and the identified party (such as
+            signed/notarized documents, employment records) </t>
+          </list></t>
+      </section>
+
+      <section anchor="Credential" title="Credential Management">
+        <t>Below we use the term "credential" to denote the credential used by
+        the identity subject to authenticate to the identity provider. </t>
+
+        <t>The Credential Binding dimension defines how strongly the
+        credential can be verified by the IdP and trusted to be presented by
+        the party represented by a given credential. In other words, this
+        dimension describes how likely it is that the right person is
+        presenting the credential to the identity provider, and how easily
+        that credential could be spoofed or stolen. </t>
+
+        <t>This dimension shall be represented by the "C" demarcator and one
+        of the following numeric values: </t>
+
+        <t><list style="hanging">
+            <t hangText="0">No credential is used / anonymous public service /
+            simple session cookies (with nothing else) </t>
+
+            <t hangText="1">Shared secret such as a username and password
+            combination</t>
+
+            <t hangText="2">Known/trusted device</t>
+
+            <t hangText="3">Proof of key possession, shared key</t>
+
+            <t hangText="4">Proof of key possession, asymmetric key</t>
+
+            <t hangText="5">Sealed hardware token / trusted biometric /
+            TPM-backed keys</t>
+          </list></t>
+
+        <t>Note that multiple factors may need to be communicated here, often
+        simultaneously when Mult-Factor Authentication is used. Also note that
+        there are many, many forms of primary credential out there, and that
+        each one should NOT be given a distinct value in this list.</t>
+      </section>
+
+      <section anchor="AssertionPresentation" title="Assertion Presentation">
+        <t>The Assertion Presentation dimension defines how well the given
+        digital identity can be communicated across the network without
+        information leaking to unintended parties, and without spoofing. In
+        other words, this dimension describes how likely it is that a given
+        digital identity asserted was actually asserted by a given identity
+        provider for a given transaction. </t>
+
+        <t>This dimension shall be represented by the "A" demarcator and one
+        of the following values: </t>
+
+        <t><list style="hanging">
+            <t hangText="0">No protection / unsigned bearer identifier (such
+            as a session cookie)</t>
+
+            <t hangText="1">Signed and verifiable token, passed through the
+            browser</t>
+
+            <t hangText="2">Signed and verifiable token, passed through a back
+            channel </t>
+
+            <t hangText="3">Token encrypted to the relying partys key and
+            audience protected </t>
+          </list></t>
+      </section>
+    </section>
+
+    <section anchor="Combining" title="Combining Components">
+      <t>All three of these dimensions (and others, as they are defined in
+      extension work) can be combined into a single vector that can be
+      communicated across the wire. </t>
+
+      <t>It is vitally important that when doing such communication of the
+      vector that the components of the vector themselves always be
+      individually available and that no attempt is made to "collapse" the
+      vector into a single value without also presenting the constituent
+      dimensions as well.</t>
+
+      <t>When communicating the vectors across the wire, they MUST be
+      protected in transit and signed by the asserting authority (such as the
+      IdP).</t>
+
+      <section title="On the Wire Representation">
+        <t>The vector shall be represented as a dot-separated list of vector
+        components, such as: </t>
+
+        <t>P1.C3.A2 </t>
+
+        <t>Which translates to pseudonymous, proof of shared key, signed
+        back-channel verified token.</t>
+      </section>
+
+      <section anchor="OIDC" title="In OpenID Connect">
+        <t>The client can request a set of acceptable VoT values with the
+        "amr" claim request. The server will respond with the "vot" claim
+        containing the vector value in the ID token: </t>
+
+        <figure>
+          <artwork><![CDATA[{ 
+    "iss":"https://idp.example.com/", 
+    "sub":"jondoe1234", 
+    "vot":"P1.C3.A2"
+}]]></artwork>
+        </figure>
+      </section>
+
+      <section anchor="SAML" title="In SAML">
+        <t>In SAML a VoT vector is communicated as an
+        AuthenticationContextClassRef, a sample definition of which might look
+        something like this:</t>
+
+        <figure>
+          <artwork><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+     targetNamespace="urn:x-vot:P1:C3:A2"
+     xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+     xmlns="urn:x-vot:P1:C3:A2"
+     finalDefault="extension"
+     blockDefault="substitution"
+     version="2.0">
+     <xs:redefine 
+         schemaLocation="saml-schema-authn-context-loa-profile.xsd"/>
+ <xs:annotation>
+    <xs:documentation>VoT vector P1.C3.A2</xs:documentation>
+ </xs:annotation>
+ <xs:complexType name="GoverningAgreementRefType">
+    <xs:complexContent>
+       <xs:restriction base="GoverningAgreementRefType">
+          <xs:attribute name="governingAgreementRef"
+             type="xs:anyURI"
+             fixed="draft-ietf-vot-this-document-00.txt"
+             use="required"/>
+       </xs:restriction>
+    </xs:complexContent>
+ </xs:complexType>
+ </xs:redefine>
+</xs:schema>]]></artwork>
+        </figure>
+      </section>
+    </section>
+
+    <section anchor="DiscoveryAndVerification"
+             title="Discovery and Verification">
+      <t>There are many aspects of the trustworthiness of an IdP that will not
+      vary on a per-transaction basis, but instead influence the trust placed
+      in the values. </t>
+
+      <section anchor="TrustFramework" title="Tying to a Trust Framework">
+        <t>When an RP receives a specific vector from an IdP, it must make a
+        trust decision within a context. A Trust Framework can provide such a
+        context, giving legal and business rules weight to an IdP's claims.
+        </t>
+      </section>
+
+      <section anchor="OperationalRequirements"
+               title="Operational Requirements">
+        <t>Operational management considerations such as controlled access to
+        server clusters and disaster recovery will be accessible from a
+        .well-known location based on the IdP's issuer URL in machine-readable
+        format.</t>
+      </section>
+
+      <section anchor="Trustmark" title="Trustmark">
+        <t>The trustmark conveys the root of trustworthiness about the claims
+        and assertions made by the IdP. The IdP will make its trustmark
+        available from a .well-known location based on its issuer URL, such as
+        the openid-configuration document: </t>
+
+        <figure>
+          <artwork><![CDATA[{
+
+ "iss": "https://idp.example.org/",
+ "trustmark": "https://trustmark-provider.org/csp-123412"
+ ...
+
+}]]></artwork>
+        </figure>
+
+        <t>The URI given in this document would contain information about
+        which vectors the IdP is allowed to claim, according to the trustmark
+        provider: </t>
+
+        <figure>
+          <artwork><![CDATA[{
+
+  "iss": "https://idp.example.org/",
+  "P": [3],
+  "C": [1, 2, 3],
+  "A": [2, 3],
+  "O": [1, 4]
+}]]></artwork>
+        </figure>
+
+        <t>A client wishing to check the claims made by an IdP can fetch the
+        information from the trustmark provider about what claims the IdP is
+        allowed to make in the first place.</t>
+      </section>
+    </section>
+
+    <section anchor="Acknowledgements" title="Acknowledgements">
+      <t/>
+    </section>
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml'?>
+
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5226.xml'?>
+
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5246.xml'?>
+
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6125.xml'?>
+
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6749.xml'?>
+
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6750.xml'?>
+
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7009.xml'?>
+
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7159.xml'?>
+
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7231.xml'?>
+
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml4/reference.W3C.REC-html5-20141028.xml'?>
+    </references>
+
+    <references title="Informative References">
+      <reference anchor="JWT">
+        <front>
+          <title>JSON Web Token (JWT)</title>
+
+          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+            <organization>Microsoft</organization>
+
+            <address>
+              <email>mbj@microsoft.com</email>
+
+              <uri>http://self-issued.info/</uri>
+            </address>
+          </author>
+
+          <author fullname="John Bradley" initials="J." surname="Bradley">
+            <organization abbrev="Ping Identity">Ping Identity</organization>
+
+            <address>
+              <email>ve7jtb@ve7jtb.com</email>
+
+              <uri>http://www.thread-safe.com/</uri>
+            </address>
+          </author>
+
+          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
+            <organization abbrev="NRI">Nomura Research
+            Institute</organization>
+
+            <address>
+              <email>n-sakimura@nri.co.jp</email>
+
+              <uri>http://nat.sakimura.org/</uri>
+            </address>
+          </author>
+
+          <date day="4" month="July" year="2014"/>
+        </front>
+
+        <seriesInfo name="Internet-Draft"
+                    value="draft-ietf-oauth-json-web-token"/>
+
+        <format target="http://tools.ietf.org/html/draft-ietf-oauth-json-web-token"
+                type="HTML"/>
+      </reference>
+    </references>
+
+    <section title="Document History">
+      <t>- 00</t>
+
+      <t><list style="symbols">
+          <t>Created initial IETF drafted based on
+          draft-richer-oauth-introspection-06 with no normative changes.</t>
+        </list></t>
+    </section>
+  </back>
+</rfc>
