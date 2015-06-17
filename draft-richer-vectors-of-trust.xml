@@ -27,9 +27,9 @@
     <date day="21" month="April" year="2015"/>
 
     <abstract>
-      <t>This document defines a mechanism for describing and signaling those
-      aspects that go into a determination of trust placed in a digital
-      identity transaction.</t>
+      <t>This document defines a mechanism for describing and signaling
+      several aspects that go into a determination of trust placed in a
+      digital identity transaction.</t>
     </abstract>
 
     <note title="Requirements Language">
@@ -42,23 +42,39 @@
 
   <middle>
     <section anchor="Introduction" title="Introduction">
-      <t>This document defines a mechanism for describing and signaling those
-      aspects that go into a determination of trust placed in a digital
-      identity transaction.</t>
+      <t>This document defines a mechanism for describing and signaling
+      several aspects that go into a determination of trust placed in a
+      digital identity transaction.</t>
+
+      <section title="Terminology">
+        <t>Identity Provider: </t>
+
+        <t>Relying Party:</t>
+
+        <t>Trust Framework:</t>
+
+        <t>Trustmark:</t>
+
+        <t>Trustmark Provider:</t>
+
+        <t>Vector:</t>
+
+        <t>Vector Component:</t>
+      </section>
     </section>
 
     <section anchor="Background" title="Background and Motivation">
-      <t> The NIST special publication 800-63 defines a linear scale "Level of
+      <t>The NIST special publication 800-63 defines a linear scale "Level of
       Assurance" measure that combines multiple attributes about an identity
       transaction into a single measure of the level of trust a relying party
-      should place on an identity transaction. </t>
+      should place on an identity transaction.</t>
 
       <t>Over the last few years several trust frameworks profiling SP 800-63
       have emerged and as the number of such profiles grow, interoperability
       becomes increasingly problematic. Interoperability between trust
       frameworks is critical in order to support transactions between identity
       providers and relying parties that are part of multiple trust
-      frameworks. </t>
+      frameworks.</t>
 
       <t>This work seeks to decompose the elements of the measure in a way
       that they can be independently communicated from an Identity Provider to
@@ -67,12 +83,12 @@
       <section anchor="Model" title="An Identity Model">
         <t>This document assumes the following model for identity. The authors
         acknowledges that this is a partial model and only serves as a point
-        of reference for this document. </t>
+        of reference for this document.</t>
 
         <t>The identity subject (aka user) is associated with an identity
         provider which acts as a trusted 3rd party on behalf of the user wrt
         to a relying party by making identity assertions about the user to the
-        relying party. </t>
+        relying party.</t>
 
         <t>The real-world person represented by the identity subject is in
         possession of a (cryptographic) primary credential bound to the user
@@ -90,23 +106,23 @@
         encouraged to think of a vector of trust as a point in a coordinate
         system, in the simples form (described below) a 3 dimensional space
         that is intended to be a recognizable, if somewhat elided, model of
-        identity subject trust. </t>
+        identity subject trust.</t>
 
         <t>An important goal for this work is to balance the need for
         simplicity (particularly on the part of the relying party) with the
         need for expressiveness. As such, this vector construct is designed to
-        be composable and extensible. </t>
+        be composable and extensible.</t>
 
         <t>All components of the vector construct must be orthogonal in the
         sense that no aspect of a component overlap an aspect of another
-        component. </t>
+        component.</t>
 
         <t>The values assigned to each component of a vector is sometimes
         written as an ordinal number (eg an integer) but MUST NOT in general
         be interpreted as having inherent order among other values assigned to
         the same or other components in the vector space. In other words, 1 is
-        different from 2, but it is dangerous to assume that 2 is "more"
-        (better) than 1.</t>
+        different from 2, but it is dangerous to assume that 2 is always
+        "more" (better) than 1.</t>
       </section>
     </section>
 
@@ -115,22 +131,32 @@
       proofing, credential binding, and assertion presentation. These
       dimentions (as described below) are intentionally elided and SHOULD be
       combined with with other information to form trust frameworks can can be
-      used as a basis for audits of identity providers and relying parties.
-      </t>
+      used as a basis for audits of identity providers and relying
+      parties.</t>
 
-      <t>We hope and expect the owners of such trust frameworks to consider
-      this specification as a baseline on which to build.</t>
+      <t>This specification also defines values for each component to be used
+      in the absence of a more specific trust framework. It is expected that
+      trust frameworks will provide context, semantics, and mapping to legal
+      statutes and business rules for each value in each component.
+      Consequently, a particular vector value can only be compared with
+      vectors defined in the same context. The RP MUST understand and take
+      into account the trust framework context in which a vector is being
+      expressed in order for it to be processed securely.</t>
+
+      <t>It is anticipated that trust frameworks will also potentially expand
+      these components.</t>
 
       <section anchor="IdentityProofing" title="Identity Proofing">
         <t>The Identity Proofing dimension defines, overall, how strongly the
         set of identity attributes have been verified and vetted, and how
         strongly they are tied to a particular credential set. In other words,
         this dimension describes how likely it is that a given digital
-        identity corresponds to a particular (real-world) identity subject.
-        </t>
+        identity corresponds to a particular (real-world) identity
+        subject.</t>
 
-        <t>This dimension shall be represented by the "P" demarcator and one
-        of the following numeric values: </t>
+        <t>This dimension shall be represented by the "P" demarcator and a
+        level value. This specification defines the following numeric
+        values:</t>
 
         <t><list style="hanging">
             <t hangText="0">No proofing is done, data is not guaranteed to be
@@ -144,27 +170,28 @@
 
             <t hangText="3">There is a legal or contractual relationship
             between the identity provider and the identified party (such as
-            signed/notarized documents, employment records) </t>
+            signed/notarized documents, employment records)</t>
           </list></t>
       </section>
 
       <section anchor="Credential" title="Credential Management">
         <t>Below we use the term "credential" to denote the credential used by
-        the identity subject to authenticate to the identity provider. </t>
+        the identity subject to authenticate to the identity provider.</t>
 
         <t>The Credential Binding dimension defines how strongly the
         credential can be verified by the IdP and trusted to be presented by
         the party represented by a given credential. In other words, this
         dimension describes how likely it is that the right person is
         presenting the credential to the identity provider, and how easily
-        that credential could be spoofed or stolen. </t>
+        that credential could be spoofed or stolen.</t>
 
-        <t>This dimension shall be represented by the "C" demarcator and one
-        of the following numeric values: </t>
+        <t>This dimension shall be represented by the "C" demarcator and a
+        level value. This specification defines the following numeric
+        values:</t>
 
         <t><list style="hanging">
             <t hangText="0">No credential is used / anonymous public service /
-            simple session cookies (with nothing else) </t>
+            simple session cookies (with nothing else)</t>
 
             <t hangText="1">Shared secret such as a username and password
             combination</t>
@@ -191,10 +218,10 @@
         information leaking to unintended parties, and without spoofing. In
         other words, this dimension describes how likely it is that a given
         digital identity asserted was actually asserted by a given identity
-        provider for a given transaction. </t>
+        provider for a given transaction.</t>
 
-        <t>This dimension shall be represented by the "A" demarcator and one
-        of the following values: </t>
+        <t>This dimension shall be represented by the "A" demarcator and a
+        level value. This specification defines the following values:</t>
 
         <t><list style="hanging">
             <t hangText="0">No protection / unsigned bearer identifier (such
@@ -204,18 +231,18 @@
             browser</t>
 
             <t hangText="2">Signed and verifiable token, passed through a back
-            channel </t>
+            channel</t>
 
             <t hangText="3">Token encrypted to the relying partys key and
-            audience protected </t>
+            audience protected</t>
           </list></t>
       </section>
     </section>
 
-    <section anchor="Combining" title="Combining Components">
+    <section anchor="Combining" title="Communicating Vector Values to RPs">
       <t>All three of these dimensions (and others, as they are defined in
-      extension work) can be combined into a single vector that can be
-      communicated across the wire. </t>
+      extension work) MUST be combined into a single vector that can be
+      communicated across the wire unbroken.</t>
 
       <t>It is vitally important that when doing such communication of the
       vector that the components of the vector themselves always be
@@ -228,19 +255,26 @@
       IdP).</t>
 
       <section title="On the Wire Representation">
-        <t>The vector shall be represented as a dot-separated list of vector
-        components, such as: </t>
+        <t>The vector MUST be represented as a dot-separated list of vector
+        components, with no specific order. A vector component type MAY occur
+        multiple times within a single vector, in which case it is considered
+        an AND of the two values. In order to simplify processing by RPs, it
+        is RECOMMENDED that trust framwork definitions carefully define
+        component values such that they are mutually exclusive or subsumptive
+        in order to avoid this situation.</t>
 
-        <t>P1.C3.A2 </t>
+        <t>For example, the vector value:</t>
 
-        <t>Which translates to pseudonymous, proof of shared key, signed
-        back-channel verified token.</t>
+        <t>P1.C3.A2</t>
+
+        <t>translates to pseudonymous, proof of shared key, signed
+        back-channel verified token in the context of this specification's
+        definitions.</t>
       </section>
 
       <section anchor="OIDC" title="In OpenID Connect">
-        <t>The client can request a set of acceptable VoT values with the
-        "amr" claim request. The server will respond with the "vot" claim
-        containing the vector value in the ID token: </t>
+        <t>The IdP communicates the vector with the "vot" claim containing the
+        vector value in the ID token:</t>
 
         <figure>
           <artwork><![CDATA[{ 
@@ -286,6 +320,17 @@
       </section>
     </section>
 
+    <section title="Requesting Vector Values">
+      <t>In some identity protocols, the RP can request that particular
+      attribues be applied to a given identity transaction.</t>
+
+      <section title="In OpenID Connect">
+        <t>The client can request a set of acceptable VoT values with the
+        "amr" claim request. This claim request MUST contain a vector
+        definition of acceptible values for each field.</t>
+      </section>
+    </section>
+
     <section anchor="DiscoveryAndVerification"
              title="Discovery and Verification">
       <t>There are many aspects of the trustworthiness of an IdP that will not
@@ -296,7 +341,10 @@
         <t>When an RP receives a specific vector from an IdP, it must make a
         trust decision within a context. A Trust Framework can provide such a
         context, giving legal and business rules weight to an IdP's claims.
-        </t>
+        The Trust Framework MUST be communicated to the RP, either during the
+        transaction [[ such as a new field in the ID Token? ]], during IdP
+        discover [[ as a field in the discovery document? see the trustmark
+        discussion below ]].</t>
       </section>
 
       <section anchor="OperationalRequirements"
@@ -310,22 +358,47 @@
       <section anchor="Trustmark" title="Trustmark">
         <t>The trustmark conveys the root of trustworthiness about the claims
         and assertions made by the IdP. The IdP will make its trustmark
-        available from a .well-known location based on its issuer URL, such as
-        the openid-configuration document: </t>
+        available from a .well-known location based on its issuer URL called
+        "trustmark". </t>
+
+        <t>This document contains two fields:</t>
+
+        <t>iss: the issuer URL of the identity assertion. This MUST match the
+        issuer in the ID Token or SAML assertion.</t>
+
+        <t>trustmark: a map of Trustmark root URLs and locations of IdP
+        trustmark registration records. The keys to this map MUST be a proper
+        prefix of the corresponding value of the map.</t>
 
         <figure>
           <artwork><![CDATA[{
 
  "iss": "https://idp.example.org/",
- "trustmark": "https://trustmark-provider.org/csp-123412"
+ "trustmark": {
+    "https://trustmark-provider.org/": "https://trustmark-provider.org/csp-123412"
+  }
  ...
 
 }]]></artwork>
         </figure>
 
-        <t>The URI given in this document would contain information about
-        which vectors the IdP is allowed to claim, according to the trustmark
-        provider: </t>
+        <t>The URI given in value of the map MUST point to a JSON document
+        containing information about which vectors the IdP is allowed to
+        claim, according to the trustmark provider. This document contains the
+        following fields:</t>
+
+        <t>sub: the issuer URL of the identity provider</t>
+
+        <t>iss: the issuer URL of the trustmark provider</t>
+
+        <t>P: an array of identity proofing values for which the identity
+        provider has been assessed and approved</t>
+
+        <t>C: an array of credential strength values for which the identity
+        provider has been assessed and approved</t>
+
+        <t>A: an array of assertion strength values for which the identity
+        provider has been assessed and approved</t>
 
         <figure>
           <artwork><![CDATA[{
@@ -333,8 +406,7 @@
   "iss": "https://idp.example.org/",
   "P": [3],
   "C": [1, 2, 3],
-  "A": [2, 3],
-  "O": [1, 4]
+  "A": [2, 3]
 }]]></artwork>
         </figure>
 
@@ -423,8 +495,8 @@
       <t>- 00</t>
 
       <t><list style="symbols">
-          <t>Created initial IETF drafted based on
-          draft-richer-oauth-introspection-06 with no normative changes.</t>
+          <t>Created initial IETF drafted based on strawman proposal discussed
+          on VoT list.</t>
         </list></t>
     </section>
   </back>
