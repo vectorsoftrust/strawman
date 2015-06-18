@@ -123,9 +123,9 @@
         of reference for this document.</t>
 
         <t>The identity subject (aka user) is associated with an identity
-        provider which acts as a trusted 3rd party on behalf of the user wrt
-        to a relying party by making identity assertions about the user to the
-        relying party.</t>
+        provider which acts as a trusted 3rd party on behalf of the user with
+        regard to to a relying party by making identity assertions about the
+        user to the relying party.</t>
 
         <t>The real-world person represented by the identity subject is in
         possession of a (cryptographic) primary credential bound to the user
@@ -139,7 +139,7 @@
         <t>The term Vectors of Trust is based on the mathematical construct of
         a Vector, which is defined as an item composed of multiple independent
         scalar values. A vector is a set of coordinates that specifies a point
-        in a (multi-dimensional) cartesian coordinate space. The reader is
+        in a (multi-dimensional) Cartesian coordinate space. The reader is
         encouraged to think of a vector of trust as a point in a coordinate
         system, in the simples form (described below) a 3 dimensional space
         that is intended to be a recognizable, if somewhat elided, model of
@@ -155,7 +155,7 @@
         component.</t>
 
         <t>The values assigned to each component of a vector is sometimes
-        written as an ordinal number (eg an integer) but MUST NOT in general
+        written as an ordinal number (e.g. an integer) but MUST NOT in general
         be interpreted as having inherent order among other values assigned to
         the same or other components in the vector space. In other words, 1 is
         different from 2, but it is dangerous to assume that 2 is always
@@ -166,10 +166,9 @@
     <section anchor="Components" title="Core components">
       <t>This specification defines three orthogonal components: identity
       proofing, credential binding, and assertion presentation. These
-      dimentions (as described below) are intentionally elided and SHOULD be
-      combined with with other information to form trust frameworks can can be
-      used as a basis for audits of identity providers and relying
-      parties.</t>
+      dimensions (as described below) are intentionally elided and SHOULD be
+      combined with other information to form trust frameworks can be used as
+      a basis for audits of identity providers and relying parties.</t>
 
       <t>This specification also defines values for each component to be used
       in the absence of a more specific trust framework. It is expected that
@@ -211,7 +210,7 @@
         <t>This dimension shall be represented by the "C" demarcator and a
         level value, such as <spanx style="verb">C1</spanx>, <spanx
         style="verb">C2</spanx>, etc. Note that multiple credential factors
-        MAY be communicated simultaneously, such as when Mult-Factor
+        MAY be communicated simultaneously, such as when Multi-Factor
         Authentication is used. </t>
       </section>
 
@@ -275,7 +274,7 @@
             <t hangText="A2">Signed and verifiable token, passed through a
             back channel</t>
 
-            <t hangText="A3">Token encrypted to the relying partys key and
+            <t hangText="A3">Token encrypted to the relying parties key and
             audience protected</t>
           </list></t>
       </section>
@@ -299,7 +298,7 @@
         vector components, with no specific order. A vector component type MAY
         occur multiple times within a single vector, separated by periods, in
         which case it is considered an AND of the two values. In order to
-        simplify processing by RPs, it is RECOMMENDED that trust framwork
+        simplify processing by RPs, it is RECOMMENDED that trust framework
         definitions carefully define component values such that they are
         mutually exclusive or subsumptive in order to avoid this situation
         where possible.</t>
@@ -370,14 +369,14 @@
 
     <section title="Requesting Vector Values">
       <t>In some identity protocols, the RP can request that particular
-      attribues be applied to a given identity transaction.</t>
+      attributes be applied to a given identity transaction.</t>
 
       <section title="In OpenID Connect">
         <t>The client can request a set of acceptable VoT values with the
         <spanx style="verb">vtr</spanx> (vector of trust request) claim
         request as part of the Request Object. The value of this field is an
         array of JSON strings, each string identifying an acceptable set of
-        vector commponents to be ANDed together. The individual strings are
+        vector components to be ANDed together. The individual strings are
         ORed together. Vector request values MAY omit components.</t>
 
         <figure>
@@ -394,8 +393,8 @@
         <t>When an RP receives a specific vector from an IdP, it must make a
         trust decision within a context. A Trust Framework can provide such a
         context, giving legal and business rules weight to an IdP's claims. A
-        trustmak is a verifiable claim to conform to a specific component of a
-        trust framework. The trustmark conveys the root of trustworthiness
+        trustmark is a verifiable claim to conform to a specific component of
+        a trust framework. The trustmark conveys the root of trustworthiness
         about the claims and assertions made by the IdP. The trustmark is
         defined by a JSON document with the following fields:</t>
 
