@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-richer-vectors-of-trust-00"
+<rfc category="std" docName="draft-richer-vectors-of-trust-01"
      ipr="trust200902">
   <front>
     <title abbrev="vectors-of-trust">Vectors of Trust</title>
@@ -50,7 +50,7 @@
       </address>
     </author>
 
-    <date day="26" month="June" year="2015"/>
+    <date day="17" month="August" year="2015"/>
 
     <abstract>
       <t>This document defines a mechanism for describing and signaling
@@ -70,7 +70,48 @@
     <section anchor="Introduction" title="Introduction">
       <t>This document defines a mechanism for describing and signaling
       several aspects that go into a determination of trust placed in a
-      digital identity transaction. Instead of communicating</t>
+      digital identity transaction. In the past, there have been two extremes
+      of communicating authentication transaction information. On one end, all
+      attributes are communicated with full provenance and associated trust
+      markings. This approach seeks to create a fully distributed attribute
+      system that can be used for things like attribute based access control
+      (ABAC). These attributes can be used to describe the end user, the
+      identity provider, the relying party, or even the transaction itself.
+      While the information that can be expressed in this model is incredible,
+      the complexity of such a system is often prohibitive to align across
+      security domains, especially to relying parties needing to process the
+      sea of disparate attributes. </t>
+
+      <t>At the other extreme there are systems that collapse all of the
+      attributes and aspects into a single scalar value that communicates, in
+      sum, how much a transaction can be trusted. The NIST special publication
+      <xref target="SP-800-63">800-63</xref> defines a linear scale Level of
+      Assurance (LoA) measure that combines multiple attributes about an
+      identity transaction into a single measure of the level of trust a
+      relying party should place on an identity transaction. Even though this
+      definition was originally made for a specific government use cases, the
+      LoA scale appeared to be applicable with a wide variety of
+      authentication use cases. This has led to a proliferation of
+      incompatible interpretations of the same scale in different trust
+      frameworks, preventing interoperability between these frameworks in
+      spite of their common measurement. Since identity proofing strength
+      increases linearly along with credential strength in the LoA scale, this
+      scale is too limited for describing many valid and useful forms of an
+      identity transaction. For example, an anonymously assigned hardware
+      token can be used in cases where the real world identity of the subject
+      cannot be known, for privacy reasons, but the credential itself can be
+      highly trusted.</t>
+
+      <t>This work seeks to find a balance between these two extremes by
+      creating a data model that combines attributes and aspects into several
+      values that can be communicated together. This is both coarser grained
+      than the distributed attributes model and finer grained than the single
+      value model, with the hope that it is a viable balance of expressivity
+      and processability. Importantly, these three levels of granularity can
+      be mapped to each other. The information of attributes can be folded
+      into a vector component, while the vector itself can be folded into an
+      assurance category. As such, the vectors of trust seeks to complement,
+      not replace, these other identity mechanisms.</t>
 
       <section title="Terminology">
         <t><list style="hanging">
@@ -78,8 +119,19 @@
             identity information and is able to assert this information across
             the network through an identity API.</t>
 
+            <t hangText="Identity Subject">The person (user) engaging in the
+            identity transaction, being identified by the identity provider
+            and identified to the relying party.</t>
+
+            <t hangText="Primary Credential">The credential used by the
+            identity subject to authenticate to the identity provider.</t>
+
+            <t hangText="Federated Credential">The assertion presented by the
+            IdP to the RP across the network to authenticate the user.</t>
+
             <t hangText="Relying Party (RP)">A system that consumes identity
-            information from an IdP for the purposes of logging users in.</t>
+            information from an IdP for the purposes of authenticating the
+            user.</t>
 
             <t hangText="Trust Framework">A document containing business rules
             and legal clauses that defines how different parties in an
@@ -98,31 +150,6 @@
             that make up a vector.</t>
           </list></t>
       </section>
-    </section>
-
-    <section anchor="Background" title="Background and Motivation">
-      <t>The NIST special publication <xref target="SP-800-63">800-63</xref>
-      defines a linear scale Level of Assurance (LoA) measure that combines
-      multiple attributes about an identity transaction into a single measure
-      of the level of trust a relying party should place on an identity
-      transaction. Even though this definition was originally made for a
-      specific government use cases, the LoA scale appeared to be applicable
-      with a wide variety of authentication use cases. This has led to a
-      proliferation of incompatible interpretations of the same scale in
-      different trust frameworks, preventing interoperability between these
-      frameworks in spite of their common measurement. </t>
-
-      <t>Since identity proofing strength increases linearly along with
-      credential strength, the LoA scale is also too limited for describing
-      many valid and useful forms of an identity transaction. For example, an
-      anonymously assigned hardware token can be used in cases where the real
-      world identity of the subject cannot be known or is verified through
-      some out of band mechanism. </t>
-
-      <t>This work seeks to decompose the elements of the LoA values in a way
-      that they can be independently communicated from an Identity Provider to
-      a Relying Party, making comparison between trust frameworks
-      possible.</t>
 
       <section anchor="Model" title="An Identity Model">
         <t>This document assumes the following (incomplete) model for
@@ -134,11 +161,12 @@
         to the relying party.</t>
 
         <t>The real-world person represented by the identity subject is in
-        possession of a (cryptographic) primary credential bound to the user
-        by (an agent of) identity provider in such a way that the binding
+        possession of a primary credential bound to the identity subject by
+        identity provider (or an agent thereof) in such a way that the binding
         between the credential and the real-world user is a representation of
-        the identity proofing process performed by the (agent of) the identity
-        provider to verify the identity of the real-world person.</t>
+        the identity proofing process performed by the the identity provider
+        (or an agent thereof) to verify the identity of the real-world
+        person.</t>
       </section>
 
       <section anchor="Architecture" title="Component Architecture">
@@ -154,7 +182,7 @@
         <t>An important goal for this work is to balance the need for
         simplicity (particularly on the part of the relying party) with the
         need for expressiveness. As such, this vector construct is designed to
-        be composable and extensible. </t>
+        be composable and extensible.</t>
 
         <t>All components of the vector construct MUST be orthogonal in the
         sense that no aspect of a component overlap an aspect of another
@@ -169,12 +197,12 @@
       </section>
     </section>
 
-    <section anchor="Components" title="Core components">
-      <t>This specification defines three orthogonal components: identity
-      proofing, credential binding, and assertion presentation. These
-      dimensions (as described below) are intentionally elided and SHOULD be
-      combined with other information to form trust frameworks can be used as
-      a basis for audits of identity providers and relying parties.</t>
+    <section anchor="Components" title="Core Components">
+      <t>This specification defines four orthogonal components: identity
+      proofing, primary credential usge, primary credential management, and
+      assertion presentation. These dimensions MUST be evaluated in the
+      context of a trust framework and SHOULD be combined with other
+      information when making a trust and authorization decision.</t>
 
       <t>This specification also defines values for each component to be used
       in the absence of a more specific trust framework. It is expected that
@@ -186,7 +214,13 @@
       expressed in order for it to be processed securely.</t>
 
       <t>It is anticipated that trust frameworks will also define additional
-      components.</t>
+      components using the component registry established in <xref
+      target="IANA"/>.</t>
+
+      <t>Each component is identified by a demarcator consisting of a single
+      case-sensitive ASCII character in the range [A-Za-z]. A value for a
+      given component is defined by its demarcator character followed by a
+      single case-sensitive ASCII character in the range [0-9A-Za-z]. </t>
 
       <section anchor="IdentityProofing" title="Identity Proofing">
         <t>The Identity Proofing dimension defines, overall, how strongly the
@@ -197,27 +231,35 @@
         subject.</t>
 
         <t>This dimension SHALL be represented by the <spanx style="verb">P</spanx>
-        demarcator and a level value, such as <spanx style="verb">P1</spanx>,
-        <spanx style="verb">P2</spanx>, etc.</t>
+        demarcator and a single-character level value, such as <spanx
+        style="verb">P1</spanx>, <spanx style="verb">P2</spanx>, etc.</t>
       </section>
 
-      <section anchor="Credential" title="Credential Management">
-        <t>Below we use the term "credential" to denote the credential used by
-        the identity subject to authenticate to the identity provider.</t>
-
-        <t>The Credential Binding dimension defines how strongly the
-        credential can be verified by the IdP and trusted to be presented by
-        the party represented by a given credential. In other words, this
-        dimension describes how likely it is that the right person is
-        presenting the credential to the identity provider, and how easily
-        that credential could be spoofed or stolen. This component is intended
-        to be a general category</t>
+      <section anchor="Credential" title="Primary Credential Usage">
+        <t>The primary credential usage dimension defines how strongly the
+        primary credential can be verified by the IdP. In other words, and how
+        easily that credential could be spoofed or stolen.</t>
 
         <t>This dimension SHALL be represented by the <spanx style="verb">C</spanx>
-        demarcator and a level value, such as <spanx style="verb">C1</spanx>,
-        <spanx style="verb">C2</spanx>, etc. Multiple credential factors MAY
-        be communicated simultaneously, such as when Multi-Factor
-        Authentication is used.</t>
+        demarcator and a single-character level value, such as <spanx
+        style="verb">C1</spanx>, <spanx style="verb">C2</spanx>, etc. Multiple
+        credential usage factors MAY be communicated simultaneously, such as
+        when Multi-Factor Authentication is used.</t>
+      </section>
+
+      <section title="Primary Credential Management">
+        <t>The primary credential management dimension conveys information
+        about the expected lifecycle of the primary credential in use,
+        including its binding, rotation, and revocation. This component
+        defines how strongly the primary credential can be trusted to be
+        presented by the party represented by the credential based on
+        knowledge of the management of the credentials at the IdP. In other
+        words, this dimension describes how likely it is that the right person
+        is presenting the credential to the identity provider.</t>
+
+        <t>This dimension SHALL be represented by the <spanx style="verb">M</spanx>
+        demarcator and a single-character level value, such as <spanx
+        style="verb">M1</spanx>, <spanx style="verb">M2</spanx>, etc. </t>
       </section>
 
       <section anchor="AssertionPresentation" title="Assertion Presentation">
@@ -226,7 +268,11 @@
         information leaking to unintended parties, and without spoofing. In
         other words, this dimension describes how likely it is that a given
         digital identity asserted was actually asserted by a given identity
-        provider for a given transaction.</t>
+        provider for a given transaction. While this information is largely
+        already known by the RP when processing an identity assertion, this
+        dimension is still useful when the RP <xref
+        target="RequestingVector">requests a login</xref> and when describing
+        the <xref target="discovery">capabilities of an IdP</xref>.</t>
 
         <t>This dimension SHALL be represented by the <spanx style="verb">A</spanx>
         demarcator and a level value, such as <spanx style="verb">A1</spanx>,
@@ -235,10 +281,11 @@
     </section>
 
     <section anchor="default-components"
-             title="Vectors of Trust Inititial component definitions">
+             title="Vectors of Trust Inititial Component Definitions">
       <t>This specification defines the following general-purpose component
       definitions, which MAY be used when a more specific set is unavailable.
-      These component values are referenced in a trustmark definition</t>
+      These component values are referenced in a trustmark definition defined
+      by [[ this document URL ]].</t>
 
       <t><list style="hanging">
           <t hangText="P0">No proofing is done, data is not guaranteed to be
@@ -250,17 +297,17 @@
           <t hangText="P2">Identity has been proofed either in person or
           remotely using trusted mechanisms (such as social proofing)</t>
 
-          <t hangText="P3">There is a legal or contractual relationship
-          between the identity provider and the identified party (such as
-          signed/notarized documents, employment records)</t>
+          <t hangText="P3">There is a binding relationship between the
+          identity provider and the identified party (such as signed/notarized
+          documents, employment records)</t>
         </list><list style="hanging">
           <t hangText="C0">No credential is used / anonymous public service /
           simple session cookies (with nothing else)</t>
 
-          <t hangText="C1">Shared secret such as a username and password
-          combination</t>
+          <t hangText="C1">Known device</t>
 
-          <t hangText="C2">Known device with trusted enrollment process</t>
+          <t hangText="C2">Shared secret such as a username and password
+          combination</t>
 
           <t hangText="C3">Cryptographic proof of key possession using shared
           key</t>
@@ -270,6 +317,15 @@
 
           <t hangText="C5">Sealed hardware token / trusted biometric /
           TPM-backed keys</t>
+        </list><list style="hanging">
+          <t hangText="M0">Self-asserted credentials</t>
+
+          <t hangText="M1">Remote issuance and rotation / use of backup
+          recover credentials (such as email verification) / deletion on user
+          request</t>
+
+          <t hangText="M2">Full proofing for issuance and rotation /
+          revocation on suspicious activity</t>
         </list><list style="hanging">
           <t hangText="A0">No protection / unsigned bearer identifier (such as
           a session cookie)</t>
@@ -286,17 +342,15 @@
     </section>
 
     <section anchor="Combining" title="Communicating Vector Values to RPs">
-      <t>All three of these dimensions (and others, as they are defined in
+      <t>All four of these dimensions (and others, as they are defined in
       extension work) MUST be combined into a single vector that can be
-      communicated across the wire unbroken.</t>
-
-      <t>All vector components MUST be individually available, MUST NOT be
-      "collapsed" into a single value without also presenting the constituent
-      dimensions as well.</t>
+      communicated across the wire unbroken. All vector components MUST be
+      individually available, MUST NOT be "collapsed" into a single value
+      without also presenting the constituent dimensions as well.</t>
 
       <t>When communicating the vectors across the wire, they MUST be
-      protected in transit and signed by the asserting authority (such as the
-      IdP).</t>
+      protected in transit and MUST signed by the asserting authority (such as
+      the IdP).</t>
 
       <section title="On the Wire Representation">
         <t>The vector MUST be represented as a period-separated ('.') list of
@@ -318,7 +372,8 @@
         target="default-components">definitions</xref>.</t>
 
         <t>Vector values MUST be communicated along side of a trustmark
-        definition to give the components context.</t>
+        definition to give the components context. A vector value without
+        context is unprocessable.</t>
       </section>
 
       <section anchor="OIDC" title="In OpenID Connect">
@@ -388,7 +443,7 @@
         identifying an acceptable set of vector components. The components are
         ANDed together while the individual vector strings are ORed together.
         Vector request values MAY omit components, indicating that any value
-        is acceptable. </t>
+        is acceptable.</t>
 
         <figure>
           <artwork><![CDATA[{
@@ -407,10 +462,10 @@
         rules to give weight to an IdP's claims. A trustmark is a verifiable
         claim to conform to a specific component of a trust framework, such as
         a verified identity provider. The trustmark conveys the root of
-        trustworthiness about the claims and assertions made by the IdP. </t>
+        trustworthiness about the claims and assertions made by the IdP.</t>
 
-        <t>The trustmark MUST be available from an HTTPS URL by the trust
-        framework provider. The contents of this URL are a <xref
+        <t>The trustmark MUST be available from an HTTPS URL served by the
+        trust framework provider. The contents of this URL are a <xref
         target="RFC7159">JSON</xref> document with the following fields:</t>
 
         <t><list style="hanging">
@@ -429,9 +484,13 @@
             values for which the identity provider has been assessed and
             approved</t>
 
-            <t hangText="C">Array of strings containing credential strength
-            values for which the identity provider has been assessed and
+            <t hangText="C">Array of strings containing primary credential
+            usage values for which the identity provider has been assessed and
             approved</t>
+
+            <t hangText="M">Array of strings containing primary credential
+            management values for which the identitity provider has been
+            assessed and approved</t>
 
             <t hangText="A">Array of strings containing assertion strength
             values for which the identity provider has been assessed and
@@ -446,9 +505,10 @@
           <artwork><![CDATA[{
   "sub": "https://idp.example.org/",
   "iss": "https://trustmark.example.org/",
-  "P": ["0", "1"],
-  "C": ["1", "2", "3"],
-  "A": ["2", "3"]
+  "P": ["P0", "P1"],
+  "C": ["C1", "C2", "C3"],
+  "M": ["M2"],
+  "A": ["C2", "C3"]
 }]]></artwork>
         </figure>
 
@@ -468,9 +528,10 @@
           <artwork><![CDATA[{
   "sub": "https://idp.example.org/",
   "iss": "https://idp.example.org/",
-  "P": ["0", "1"],
-  "C": ["1", "2", "3"],
-  "A": ["2", "3"]
+  "P": ["C0", "C1"],
+  "C": ["C1", "C2", "C3"],
+  "M": ["M2"],
+  "A": ["C2", "C3"]
 }]]></artwork>
         </figure>
       </section>
@@ -497,6 +558,79 @@
       <t>The authors would like to thank the members of the Vectors of Trust
       mailing list in the IETF for discussion and feedback on the concept and
       document.</t>
+    </section>
+
+    <section anchor="IANA" title="IANA Considerations">
+      <t>This specification creates one registry and registers several values
+      into an existing registry.</t>
+
+      <section title="Vector Of Trust Components Registry">
+        <t>The Vector of Trust Components Registry contains the definitions of
+        vector components and their associated demarcators.</t>
+
+        <t><list style="symbols">
+            <t>Demarcator Symbol: P</t>
+
+            <t>Description: Identity proofing</t>
+
+            <t>Document: [[ this document ]]</t>
+          </list><list style="symbols">
+            <t>Demarcator Symbol: C</t>
+
+            <t>Description: Primary credential usage</t>
+
+            <t>Document: [[ this document ]]</t>
+          </list><list style="symbols">
+            <t>Demarcator Symbol: M</t>
+
+            <t>Description: Primary credential management</t>
+
+            <t>Document: [[ this document ]]</t>
+          </list><list style="symbols">
+            <t>Demarcator Symbol: A</t>
+
+            <t>Description: Assertion presentation</t>
+
+            <t>Document: [[ this document ]]</t>
+          </list></t>
+      </section>
+
+      <section title="Additions to JWT Claims Registry">
+        <t>This specification adds the following values to the JWT Claims
+        Registry.</t>
+
+        <t><list style="symbols">
+            <t>Claim name: vot</t>
+
+            <t>Description: Vector of Trust value</t>
+
+            <t>Document: [[ this document ]]</t>
+          </list><list style="symbols">
+            <t>Demarcator Symbol: vtm</t>
+
+            <t>Description: Vector of Trust Trustmark</t>
+
+            <t>Document: [[ this document ]]</t>
+          </list><list style="symbols">
+            <t>Demarcator Symbol: vtr</t>
+
+            <t>Description: Vector of Trust Request</t>
+
+            <t>Document: [[ this document ]]</t>
+          </list></t>
+      </section>
+    </section>
+
+    <section anchor="Security" title="Security Considerations">
+      <t>The vector of trust value MUST be cryptographically protected in
+      transit, using TLS. The vector of trust value MUST be associated with a
+      trustmark marker, and the two MUST be carried in a cryptographically
+      bound mechanism such as a signed identity assertion. </t>
+    </section>
+
+    <section anchor="Privacy" title="Privacy Considerations">
+      <t>By design, vector of trust values contain information about a user's
+      identity and assications that can be made thereto.</t>
     </section>
   </middle>
 
@@ -704,6 +838,18 @@
     </references>
 
     <section title="Document History">
+      <t>- 01</t>
+
+      <t><list style="symbols">
+          <t>Added IANA registry for components.</t>
+
+          <t>Added preliminary security considerations and privacy
+          considerations.</t>
+
+          <t>Split "credential binding" into "primary credential usage" and
+          "primary credential management".</t>
+        </list></t>
+
       <t>- 00</t>
 
       <t><list style="symbols">
@@ -715,6 +861,11 @@
 
           <t>Solidified trustmark document definition.</t>
         </list></t>
+    </section>
+
+    <section title="Example Extension">
+      <t>To extend the vector component definitions, a specification MUST
+      register its contents in the </t>
     </section>
   </back>
 </rfc>
