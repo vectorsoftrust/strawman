@@ -50,12 +50,12 @@
       </address>
     </author>
 
-    <date day="17" month="August" year="2015"/>
+    <date day="4" month="September" year="2015"/>
 
     <abstract>
       <t>This document defines a mechanism for describing and signaling
-      several aspects that go into a determination of trust placed in a
-      digital identity transaction.</t>
+      several aspects that are used to calculate trust placed in a digital
+      identity transaction.</t>
     </abstract>
 
     <note title="Requirements Language">
@@ -69,18 +69,18 @@
   <middle>
     <section anchor="Introduction" title="Introduction">
       <t>This document defines a mechanism for describing and signaling
-      several aspects that go into a determination of trust placed in a
-      digital identity transaction. In the past, there have been two extremes
-      of communicating authentication transaction information. On one end, all
-      attributes are communicated with full provenance and associated trust
-      markings. This approach seeks to create a fully distributed attribute
-      system that can be used for things like attribute based access control
-      (ABAC). These attributes can be used to describe the end user, the
-      identity provider, the relying party, or even the transaction itself.
-      While the information that can be expressed in this model is incredible,
-      the complexity of such a system is often prohibitive to align across
-      security domains, especially to relying parties needing to process the
-      sea of disparate attributes. </t>
+      several aspects of digital identity transactions that are used to
+      determine a level of trust in that transaction. In the past, there have
+      been two extremes of communicating authentication transaction
+      information. On one end, all attributes are communicated with full
+      provenance and associated trust markings. This approach seeks to create
+      a fully distributed attribute system that can be used for things like
+      attribute based access control (ABAC). These attributes can be used to
+      describe the end user, the identity provider, the relying party, or even
+      the transaction itself. While the information that can be expressed in
+      this model is incredible, the complexity of such a system is often
+      prohibitive to align across security domains, especially to relying
+      parties needing to process the sea of disparate attributes.</t>
 
       <t>At the other extreme there are systems that collapse all of the
       attributes and aspects into a single scalar value that communicates, in
@@ -103,15 +103,16 @@
       highly trusted.</t>
 
       <t>This work seeks to find a balance between these two extremes by
-      creating a data model that combines attributes and aspects into several
-      values that can be communicated together. This is both coarser grained
-      than the distributed attributes model and finer grained than the single
-      value model, with the hope that it is a viable balance of expressivity
-      and processability. Importantly, these three levels of granularity can
-      be mapped to each other. The information of attributes can be folded
-      into a vector component, while the vector itself can be folded into an
-      assurance category. As such, the vectors of trust seeks to complement,
-      not replace, these other identity mechanisms.</t>
+      creating a data model that combines attributes of the user and aspects
+      of the authenticaiton context into several values that can be
+      communicated together. This approach is both coarser grained than the
+      distributed attributes model and finer grained than the single value
+      model, with the hope that it is a viable balance of expressivity and
+      processability. Importantly, these three levels of granularity can be
+      mapped to each other. The information of several attributes can be
+      folded into a vector component, while the vector itself can be folded
+      into an assurance category. As such, the vectors of trust seeks to
+      complement, not replace, these other identity and trust mechanisms.</t>
 
       <section title="Terminology">
         <t><list style="hanging">
@@ -220,7 +221,7 @@
       <t>Each component is identified by a demarcator consisting of a single
       case-sensitive ASCII character in the range [A-Za-z]. A value for a
       given component is defined by its demarcator character followed by a
-      single case-sensitive ASCII character in the range [0-9A-Za-z]. </t>
+      single case-sensitive ASCII character in the range [0-9A-Za-z].</t>
 
       <section anchor="IdentityProofing" title="Identity Proofing">
         <t>The Identity Proofing dimension defines, overall, how strongly the
@@ -259,7 +260,7 @@
 
         <t>This dimension SHALL be represented by the <spanx style="verb">M</spanx>
         demarcator and a single-character level value, such as <spanx
-        style="verb">M1</spanx>, <spanx style="verb">M2</spanx>, etc. </t>
+        style="verb">M1</spanx>, <spanx style="verb">M2</spanx>, etc.</t>
       </section>
 
       <section anchor="AssertionPresentation" title="Assertion Presentation">
@@ -269,8 +270,8 @@
         other words, this dimension describes how likely it is that a given
         digital identity asserted was actually asserted by a given identity
         provider for a given transaction. While this information is largely
-        already known by the RP when processing an identity assertion, this
-        dimension is still useful when the RP <xref
+        already known by the RP by the nature of processing an identity
+        assertion, this dimension is still useful when the RP <xref
         target="RequestingVector">requests a login</xref> and when describing
         the <xref target="discovery">capabilities of an IdP</xref>.</t>
 
@@ -324,8 +325,8 @@
           recover credentials (such as email verification) / deletion on user
           request</t>
 
-          <t hangText="M2">Full proofing for issuance and rotation /
-          revocation on suspicious activity</t>
+          <t hangText="M2">Full proofing required for each issuance and
+          rotation / revocation on suspicious activity</t>
         </list><list style="hanging">
           <t hangText="A0">No protection / unsigned bearer identifier (such as
           a session cookie)</t>
@@ -355,11 +356,13 @@
       <section title="On the Wire Representation">
         <t>The vector MUST be represented as a period-separated ('.') list of
         vector components, with no specific order. A vector component type MAY
-        occur multiple times within a single vector, separated by periods, in
-        which case it is considered an AND of the two values. In order to
-        simplify processing by RPs, it is RECOMMENDED that trust framework
-        definitions carefully define component values such that they are
-        mutually exclusive or subsumptive in order to avoid this situation
+        occur multiple times within a single vector, with each component
+        separated by periods. Multiple values for a component are considered
+        an AND of the values. A single value of a vector component MUST NOT
+        occur more than once in a single vector. In order to simplify
+        processing by RPs, it is RECOMMENDED that trust framework definitions
+        carefully define component values such that they are mutually
+        exclusive or subsumptive in order to avoid repeated vector components
         where possible.</t>
 
         <t>Vector components MAY be omitted from a vector. No holding space is
@@ -406,7 +409,7 @@
 <xs:schema
      targetNamespace="urn:x-vot:P1:C3:A2"
      xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-     xmlns="urn:x-vot:P1:C3:A2"
+     xmlns="urn:x-vot:P1.C3.A2"
      finalDefault="extension"
      blockDefault="substitution"
      version="2.0">
@@ -440,10 +443,10 @@
         request a set of acceptable VoT values with the <spanx style="verb">vtr</spanx>
         (vector of trust request) claim request as part of the Request Object.
         The value of this field is an array of JSON strings, each string
-        identifying an acceptable set of vector components. The components are
-        ANDed together while the individual vector strings are ORed together.
-        Vector request values MAY omit components, indicating that any value
-        is acceptable.</t>
+        identifying an acceptable set of vector components. The components
+        within each vector are ANDed together while the individual vector
+        strings are ORed together. Vector request values MAY omit components,
+        indicating that any value is acceptable.</t>
 
         <figure>
           <artwork><![CDATA[{
@@ -469,16 +472,16 @@
         target="RFC7159">JSON</xref> document with the following fields:</t>
 
         <t><list style="hanging">
-            <t hangText="sub">The issuer URL of the identity provider that
+            <t hangText="idp">The issuer URL of the identity provider that
             this trustmark pertains to. This MUST match the corresponding
             issuer claim in the identity token, such as the OpenID Connect
             <spanx style="verb">iss</spanx> field. This MUST be an HTTPS
             URL.</t>
 
-            <t hangText="iss">The issuer URL of the trustmark provider that
-            issues this trustmark. The URL that a trustmark is fetched from
-            MUST start with the <spanx style="verb">iss</spanx> URL in this
-            field. This MUST be an HTTPS URL.</t>
+            <t hangText="trustmark_provider">The issuer URL of the trustmark
+            provider that issues this trustmark. The URL that a trustmark is
+            fetched from MUST start with the <spanx style="verb">iss</spanx>
+            URL in this field. This MUST be an HTTPS URL.</t>
 
             <t hangText="P">Array of strings containing identity proofing
             values for which the identity provider has been assessed and
@@ -497,14 +500,17 @@
             approved</t>
           </list></t>
 
+        <t>Additional vector component values MUST be listed in a similar
+        fashion using their demarcator.</t>
+
         <t>For example, the following trustmark provided by the
         trustmark.example.org organization applies to the idp.example.org
         identity provider:</t>
 
         <figure>
           <artwork><![CDATA[{
-  "sub": "https://idp.example.org/",
-  "iss": "https://trustmark.example.org/",
+  "idp": "https://idp.example.org/",
+  "trustmark_provider": "https://trustmark.example.org/",
   "P": ["P0", "P1"],
   "C": ["C1", "C2", "C3"],
   "M": ["M2"],
@@ -526,8 +532,8 @@
 
         <figure>
           <artwork><![CDATA[{
-  "sub": "https://idp.example.org/",
-  "iss": "https://idp.example.org/",
+  "idp": "https://idp.example.org/",
+  "trustmark_provider": "https://idp.example.org/",
   "P": ["C0", "C1"],
   "C": ["C1", "C2", "C3"],
   "M": ["M2"],
@@ -538,11 +544,12 @@
 
       <section anchor="discovery" title="Discovery">
         <t>The IdP MAY list all of its available trustmarks as part of its
-        discovery document. Trustmarks are listed in the trustmarks element
-        which contains a single <xref target="RFC7159">JSON</xref> object. The
-        keys of this JSON object are trustmark provider issuer URLs and the
-        values of this object are the corresponding trustmarks for this
-        IdP.</t>
+        discovery document, such as the OpenID Connect Discovery server
+        configuration document. Trustmarks are listed in the trustmarks
+        element which contains a single <xref target="RFC7159">JSON</xref>
+        object. The keys of this JSON object are trustmark provider issuer
+        URLs and the values of this object are the corresponding trustmarks
+        for this IdP.</t>
 
         <figure>
           <artwork><![CDATA[{
@@ -624,13 +631,16 @@
     <section anchor="Security" title="Security Considerations">
       <t>The vector of trust value MUST be cryptographically protected in
       transit, using TLS. The vector of trust value MUST be associated with a
-      trustmark marker, and the two MUST be carried in a cryptographically
-      bound mechanism such as a signed identity assertion. </t>
+      trustmark marker, and the two MUST be carried together in a
+      cryptographically bound mechanism such as a signed identity
+      assertion.</t>
     </section>
 
     <section anchor="Privacy" title="Privacy Considerations">
       <t>By design, vector of trust values contain information about a user's
-      identity and assications that can be made thereto.</t>
+      identity and assications that can be made thereto. Therefore, all
+      aspects of a vector of trust contain potentially privacy-sensitive
+      information and MUST be guarded as such.</t>
     </section>
   </middle>
 
@@ -865,7 +875,7 @@
 
     <section title="Example Extension">
       <t>To extend the vector component definitions, a specification MUST
-      register its contents in the </t>
+      register its contents in the</t>
     </section>
   </back>
 </rfc>
