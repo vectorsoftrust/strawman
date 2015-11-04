@@ -156,10 +156,10 @@
         <t>This document assumes the following (incomplete) model for
         identity.</t>
 
-        <t>The identity subject (aka user) is associated with an identity
-        provider which acts as a trusted 3rd party on behalf of the user with
-        regard to a relying party by making identity assertions about the user
-        to the relying party.</t>
+        <t>The identity subject (also known as the user) is associated with an
+        identity provider which acts as a trusted third party on behalf of the
+        user with regard to a relying party by making identity assertions
+        about the user to the relying party.</t>
 
         <t>The real-world person represented by the identity subject is in
         possession of a primary credential bound to the identity subject by
@@ -188,17 +188,10 @@
         <t>All components of the vector construct MUST be orthogonal in the
         sense that no aspect of a component overlap an aspect of another
         component.</t>
-
-        <t>The values assigned to each component of a vector is sometimes
-        written as an ordinal number (e.g. an integer) but MUST NOT be assumed
-        as having inherent ordinal properties when compared to the same or
-        other components in the vector space. In other words, 1 is different
-        from 2, but it is dangerous to assume that 2 is always "more" (better)
-        than 1.</t>
       </section>
     </section>
 
-    <section anchor="Components" title="Core Components">
+    <section anchor="Components" title="Component Definitions">
       <t>This specification defines four orthogonal components: identity
       proofing, primary credential usge, primary credential management, and
       assertion presentation. These dimensions MUST be evaluated in the
@@ -206,22 +199,42 @@
       information when making a trust and authorization decision.</t>
 
       <t>This specification also defines values for each component to be used
-      in the absence of a more specific trust framework. It is expected that
-      trust frameworks will provide context, semantics, and mapping to legal
-      statutes and business rules for each value in each component.
-      Consequently, a particular vector value can only be compared with
-      vectors defined in the same context. The RP MUST understand and take
-      into account the trust framework context in which a vector is being
-      expressed in order for it to be processed securely.</t>
-
-      <t>It is anticipated that trust frameworks will also define additional
-      components using the component registry established in <xref
-      target="IANA"/>.</t>
+      in the absence of a more specific trust framework in <xref
+      target="default-components"/>. It is expected that trust frameworks will
+      provide context, semantics, and mapping to legal statutes and business
+      rules for each value in each component. Consequently, a particular
+      vector value can only be compared with vectors defined in the same
+      context. The RP MUST understand and take into account the trust
+      framework context in which a vector is being expressed in order for it
+      to be processed securely.</t>
 
       <t>Each component is identified by a demarcator consisting of a single
-      case-sensitive ASCII character in the range [A-Za-z]. A value for a
-      given component is defined by its demarcator character followed by a
-      single case-sensitive ASCII character in the range [0-9A-Za-z].</t>
+      uppercase ASCII letter in the range <spanx style="verb">[A-Z]</spanx>.
+      The demarcator SHOULD reflect the category with which it is associated.
+      Demarcators for components MUST be registered as described in <xref
+      target="IANA"/>. It is anticipated that trust framework definitions will
+      use this registry to define specialized components, though it is
+      RECOMMENDED that trust frameworks re-use existing components wherever
+      possible. </t>
+
+      <t>The value for a given component within a vector of trust is defined
+      by its demarcator character followed by a single digit or lowercase
+      ASCII letter in the range <spanx style="verb">[0-9a-z]</spanx>.
+      Categories which have a natural ordering SHOULD use digits, with <spanx
+      style="verb">0</spanx> as the lowest value. Categories which do not have
+      a natural ordering, or which can have an ambiguous ordering, SHOULD use
+      letters. Categorgies MAY use both letter style and number style value
+      indicators. For example, defining <spanx style="verb">0</spanx> as a
+      special "empty" value and using letters such as <spanx style="verb">a</spanx>,
+      <spanx style="verb">b</spanx>, <spanx style="verb">c</spanx> for normal
+      values.</t>
+
+      <t>Regardless of the type of value indicator used, the values assigned
+      to each component of a vector MUST NOT be assumed as having inherent
+      ordinal properties when compared to the same or other components in the
+      vector space. In other words, <spanx style="verb">1</spanx> is different
+      from <spanx style="verb">2</spanx>, but it is dangerous to assume that
+      <spanx style="verb">2</spanx> is always better than <spanx style="verb">1</spanx>.</t>
 
       <section anchor="IdentityProofing" title="Identity Proofing">
         <t>The Identity Proofing dimension defines, overall, how strongly the
@@ -233,7 +246,11 @@
 
         <t>This dimension SHALL be represented by the <spanx style="verb">P</spanx>
         demarcator and a single-character level value, such as <spanx
-        style="verb">P1</spanx>, <spanx style="verb">P2</spanx>, etc.</t>
+        style="verb">P0</spanx>, <spanx style="verb">P1</spanx>, etc. Most
+        definitions of identity proofing will have a natural ordering, as more
+        or less stringent proofing can be applied to an individual. In such
+        cases it is RECOMMENDED that a digit style value be used for this
+        component.</t>
       </section>
 
       <section anchor="Credential" title="Primary Credential Usage">
@@ -243,9 +260,13 @@
 
         <t>This dimension SHALL be represented by the <spanx style="verb">C</spanx>
         demarcator and a single-character level value, such as <spanx
-        style="verb">C1</spanx>, <spanx style="verb">C2</spanx>, etc. Multiple
-        credential usage factors MAY be communicated simultaneously, such as
-        when Multi-Factor Authentication is used.</t>
+        style="verb">Ca</spanx>, <spanx style="verb">Cb</spanx>, etc. Most
+        definitions of credential usage will not have an overall natural
+        ordering, as there may be several equivalent classes described within
+        a trust framework. In such cases it is RECOMMENDED that a letter style
+        value be used for this component. Multiple credential usage factors
+        MAY be communicated simultaneously, such as when Multi-Factor
+        Authentication is used.</t>
       </section>
 
       <section title="Primary Credential Management">
@@ -260,7 +281,11 @@
 
         <t>This dimension SHALL be represented by the <spanx style="verb">M</spanx>
         demarcator and a single-character level value, such as <spanx
-        style="verb">M1</spanx>, <spanx style="verb">M2</spanx>, etc.</t>
+        style="verb">Ma</spanx>, <spanx style="verb">Mb</spanx>, etc. Most
+        definitions of credential management will not have an overall natural
+        ordering, though there can be preference and comparison between values
+        in some circumstances. In such cases it is RECOMMENDED that a letter
+        style value be used for this component.</t>
       </section>
 
       <section anchor="AssertionPresentation" title="Assertion Presentation">
@@ -276,8 +301,11 @@
         the <xref target="discovery">capabilities of an IdP</xref>.</t>
 
         <t>This dimension SHALL be represented by the <spanx style="verb">A</spanx>
-        demarcator and a level value, such as <spanx style="verb">A1</spanx>,
-        <spanx style="verb">A2</spanx>, etc.</t>
+        demarcator and a level value, such as <spanx style="verb">Aa</spanx>,
+        <spanx style="verb">Ab</spanx>, etc. Most definitions of assertion
+        presentation will not have an overall natural ordering. In such cases,
+        it is RECOMMENDED that a letter style value be used for this
+        component.</t>
       </section>
     </section>
 
@@ -288,58 +316,74 @@
       These component values are referenced in a trustmark definition defined
       by [[ this document URL ]].</t>
 
-      <t><list style="hanging">
-          <t hangText="P0">No proofing is done, data is not guaranteed to be
-          persistent across sessions</t>
+      <section title="Identity Proofing">
+        <t><list style="hanging">
+            <t hangText="P0">No proofing is done, data is not guaranteed to be
+            persistent across sessions</t>
 
-          <t hangText="P1">Attributes are self-asserted but consistent over
-          time, potentially pseudonymous</t>
+            <t hangText="P1">Attributes are self-asserted but consistent over
+            time, potentially pseudonymous</t>
 
-          <t hangText="P2">Identity has been proofed either in person or
-          remotely using trusted mechanisms (such as social proofing)</t>
+            <t hangText="P2">Identity has been proofed either in person or
+            remotely using trusted mechanisms (such as social proofing)</t>
 
-          <t hangText="P3">There is a binding relationship between the
-          identity provider and the identified party (such as signed/notarized
-          documents, employment records)</t>
-        </list><list style="hanging">
-          <t hangText="C0">No credential is used / anonymous public service /
-          simple session cookies (with nothing else)</t>
+            <t hangText="P3">There is a binding relationship between the
+            identity provider and the identified party (such as
+            signed/notarized documents, employment records)</t>
+          </list></t>
+      </section>
 
-          <t hangText="C1">Known device</t>
+      <section title="Primary Credential Usage">
+        <t><list style="hanging">
+            <t hangText="C0">No credential is used / anonymous public
+            service</t>
 
-          <t hangText="C2">Shared secret such as a username and password
-          combination</t>
+            <t hangText="Ca">Simple session cookies (with nothing else)</t>
 
-          <t hangText="C3">Cryptographic proof of key possession using shared
-          key</t>
+            <t hangText="Cb">Known device</t>
 
-          <t hangText="C4">Cryptographic proof of key possession using
-          asymmetric key</t>
+            <t hangText="Cc">Shared secret such as a username and password
+            combination</t>
 
-          <t hangText="C5">Sealed hardware token / trusted biometric /
-          TPM-backed keys</t>
-        </list><list style="hanging">
-          <t hangText="M0">Self-asserted credentials</t>
+            <t hangText="Cd">Cryptographic proof of key possession using
+            shared key</t>
 
-          <t hangText="M1">Remote issuance and rotation / use of backup
-          recover credentials (such as email verification) / deletion on user
-          request</t>
+            <t hangText="Ce">Cryptographic proof of key possession using
+            asymmetric key</t>
 
-          <t hangText="M2">Full proofing required for each issuance and
-          rotation / revocation on suspicious activity</t>
-        </list><list style="hanging">
-          <t hangText="A0">No protection / unsigned bearer identifier (such as
-          a session cookie)</t>
+            <t hangText="Cf">Sealed hardware token / trusted biometric /
+            TPM-backed keys</t>
+          </list></t>
+      </section>
 
-          <t hangText="A1">Signed and verifiable token, passed through the
-          browser</t>
+      <section title="Primary Credential Management">
+        <t><list style="hanging">
+            <t hangText="Ma">Self-asserted credentials</t>
 
-          <t hangText="A2">Signed and verifiable token, passed through a back
-          channel</t>
+            <t hangText="Mb">Remote issuance and rotation / use of backup
+            recover credentials (such as email verification) / deletion on
+            user request</t>
 
-          <t hangText="A3">Token encrypted to the relying parties key and
-          audience protected</t>
-        </list></t>
+            <t hangText="Mc">Full proofing required for each issuance and
+            rotation / revocation on suspicious activity</t>
+          </list></t>
+      </section>
+
+      <section title="Assertion Presentation">
+        <t><list style="hanging">
+            <t hangText="Aa">No protection / unsigned bearer identifier (such
+            as a session cookie)</t>
+
+            <t hangText="Ab">Signed and verifiable token, passed through the
+            browser</t>
+
+            <t hangText="Ac">Signed and verifiable token, passed through a
+            back channel</t>
+
+            <t hangText="Ad">Token encrypted to the relying parties key and
+            audience protected</t>
+          </list></t>
+      </section>
     </section>
 
     <section anchor="Combining" title="Communicating Vector Values to RPs">
@@ -358,7 +402,7 @@
         vector components, with no specific order. A vector component type MAY
         occur multiple times within a single vector, with each component
         separated by periods. Multiple values for a component are considered
-        an AND of the values. A single value of a vector component MUST NOT
+        an AND of the values. A specific value of a vector component MUST NOT
         occur more than once in a single vector. In order to simplify
         processing by RPs, it is RECOMMENDED that trust framework definitions
         carefully define component values such that they are mutually
@@ -369,9 +413,10 @@
         left for an omitted vector component. If a vector component is
         omitted, the IdP is making no claim for that category.</t>
 
-        <t>For example, the vector value <spanx style="verb">P1.C3.A2</spanx>
-        translates to pseudonymous, proof of shared key, signed back-channel
-        verified token in the context of this specification's <xref
+        <t>For example, the vector value <spanx style="verb">P1.Cc.Ab</spanx>
+        translates to "pseudonymous, proof of shared key, signed back-channel
+        verified token, and no claim made toward credential management" in the
+        context of this specification's <xref
         target="default-components">definitions</xref>.</t>
 
         <t>Vector values MUST be communicated along side of a trustmark
@@ -387,18 +432,21 @@
         be sent as an HTTPS URL in the <spanx style="verb">vtm</spanx> (vector
         trust mark) claim to provide context to the vector.</t>
 
-        <t>For example:</t>
+        <t>For example, the body of an ID token claiming "pseudonymous, proof
+        of shared key, signed back-channel verified token, and no claim made
+        toward credential management" could look like this:</t>
 
         <figure>
           <artwork><![CDATA[{ 
     "iss": "https://idp.example.com/", 
     "sub": "jondoe1234", 
-    "vot": "P1.C3.A2",
+    "vot": "P1.Cc.Ab",
     "vtm": "https://trustmark.example.org/trustmark/idp.example.com"
 }]]></artwork>
         </figure>
       </section>
 
+      <!--
       <section anchor="SAML" title="In SAML">
         <t>In SAML a VoT vector is communicated as an
         AuthenticationContextClassRef, a sample definition of which might look
@@ -432,6 +480,7 @@
 </xs:schema>]]></artwork>
         </figure>
       </section>
+		  -->
     </section>
 
     <section anchor="RequestingVector" title="Requesting Vector Values">
@@ -450,121 +499,116 @@
 
         <figure>
           <artwork><![CDATA[{
-    "vtr": ["P1.C2.C3.A2", "C5.A2"]
+    "vtr": ["P1.Cb.Cc.Ab", "Ce.Ab"]
 }]]></artwork>
         </figure>
       </section>
     </section>
 
-    <section anchor="DiscoveryAndVerification"
-             title="Discovery and Verification">
-      <section anchor="Trustmark" title="Trustmark">
-        <t>When an RP receives a specific vector from an IdP, it needs to make
-        a decision to trust the vector within a specific context. A trust
-        framework can provide such a context, allowing legal and business
-        rules to give weight to an IdP's claims. A trustmark is a verifiable
-        claim to conform to a specific component of a trust framework, such as
-        a verified identity provider. The trustmark conveys the root of
-        trustworthiness about the claims and assertions made by the IdP.</t>
+    <section anchor="Trustmark" title="Trustmark">
+      <t>When an RP receives a specific vector from an IdP, it needs to make a
+      decision to trust the vector within a specific context. A trust
+      framework can provide such a context, allowing legal and business rules
+      to give weight to an IdP's claims. A trustmark is a verifiable claim to
+      conform to a specific component of a trust framework, such as a verified
+      identity provider. The trustmark conveys the root of trustworthiness
+      about the claims and assertions made by the IdP.</t>
 
-        <t>The trustmark MUST be available from an HTTPS URL served by the
-        trust framework provider. The contents of this URL are a <xref
-        target="RFC7159">JSON</xref> document with the following fields:</t>
+      <t>The trustmark MUST be available from an HTTPS URL served by the trust
+      framework provider. The contents of this URL are a <xref
+      target="RFC7159">JSON</xref> document with the following fields:</t>
 
-        <t><list style="hanging">
-            <t hangText="idp">The issuer URL of the identity provider that
-            this trustmark pertains to. This MUST match the corresponding
-            issuer claim in the identity token, such as the OpenID Connect
-            <spanx style="verb">iss</spanx> field. This MUST be an HTTPS
-            URL.</t>
+      <t><list style="hanging">
+          <t hangText="idp">The issuer URL of the identity provider that this
+          trustmark pertains to. This MUST match the corresponding issuer
+          claim in the identity token, such as the OpenID Connect <spanx
+          style="verb">iss</spanx> field. This MUST be an HTTPS URL.</t>
 
-            <t hangText="trustmark_provider">The issuer URL of the trustmark
-            provider that issues this trustmark. The URL that a trustmark is
-            fetched from MUST start with the <spanx style="verb">iss</spanx>
-            URL in this field. This MUST be an HTTPS URL.</t>
+          <t hangText="trustmark_provider">The issuer URL of the trustmark
+          provider that issues this trustmark. The URL that a trustmark is
+          fetched from MUST start with the <spanx style="verb">iss</spanx> URL
+          in this field. This MUST be an HTTPS URL.</t>
 
-            <t hangText="P">Array of strings containing identity proofing
-            values for which the identity provider has been assessed and
-            approved</t>
+          <t hangText="P">Array of strings containing identity proofing values
+          for which the identity provider has been assessed and approved</t>
 
-            <t hangText="C">Array of strings containing primary credential
-            usage values for which the identity provider has been assessed and
-            approved</t>
+          <t hangText="C">Array of strings containing primary credential usage
+          values for which the identity provider has been assessed and
+          approved</t>
 
-            <t hangText="M">Array of strings containing primary credential
-            management values for which the identitity provider has been
-            assessed and approved</t>
+          <t hangText="M">Array of strings containing primary credential
+          management values for which the identitity provider has been
+          assessed and approved</t>
 
-            <t hangText="A">Array of strings containing assertion strength
-            values for which the identity provider has been assessed and
-            approved</t>
-          </list></t>
+          <t hangText="A">Array of strings containing assertion strength
+          values for which the identity provider has been assessed and
+          approved</t>
+        </list></t>
 
-        <t>Additional vector component values MUST be listed in a similar
-        fashion using their demarcator.</t>
+      <t>Additional vector component values MUST be listed in a similar
+      fashion using their demarcator.</t>
 
-        <t>For example, the following trustmark provided by the
-        trustmark.example.org organization applies to the idp.example.org
-        identity provider:</t>
+      <t>For example, the following trustmark provided by the
+      trustmark.example.org organization applies to the idp.example.org
+      identity provider:</t>
 
-        <figure>
-          <artwork><![CDATA[{
+      <figure>
+        <artwork><![CDATA[{
   "idp": "https://idp.example.org/",
   "trustmark_provider": "https://trustmark.example.org/",
   "P": ["P0", "P1"],
-  "C": ["C1", "C2", "C3"],
-  "M": ["M2"],
-  "A": ["C2", "C3"]
+  "C": ["C0", "Ca", "Cb"],
+  "M": ["Mb"],
+  "A": ["Ab", "Ac"]
 }]]></artwork>
-        </figure>
+      </figure>
 
-        <t>A client wishing to check the claims made by an IdP can fetch the
-        information from the trustmark provider about what claims the IdP is
-        allowed to make in the first place and process them accordingly.</t>
+      <t>A client wishing to check the claims made by an IdP can fetch the
+      information from the trustmark provider about what claims the IdP is
+      allowed to make in the first place and process them accordingly.</t>
 
-        <t>The means by which the RP decides which trustmark providers it
-        trusts is out of scope for this specification and is generally
-        configured out of band.</t>
+      <t>The means by which the RP decides which trustmark providers it trusts
+      is out of scope for this specification and is generally configured out
+      of band.</t>
 
-        <t>Though most trust frameworks will provide a third-party independent
-        verification service for components, an IdP MAY host its own
-        trustmark. For example, a self-hosted trustmark would look like:</t>
+      <t>Though most trust frameworks will provide a third-party independent
+      verification service for components, an IdP MAY host its own trustmark.
+      For example, a self-hosted trustmark would look like:</t>
 
-        <figure>
-          <artwork><![CDATA[{
+      <figure>
+        <artwork><![CDATA[{
   "idp": "https://idp.example.org/",
   "trustmark_provider": "https://idp.example.org/",
-  "P": ["C0", "C1"],
-  "C": ["C1", "C2", "C3"],
-  "M": ["M2"],
-  "A": ["C2", "C3"]
+  "P": ["P0", "P1"],
+  "C": ["C0", "Ca", "Cb"],
+  "M": ["Mb"],
+  "A": ["Ab", "Ac"]
 }]]></artwork>
-        </figure>
-      </section>
+      </figure>
+    </section>
 
-      <section anchor="discovery" title="Discovery">
-        <t>The IdP MAY list all of its available trustmarks as part of its
-        discovery document, such as the OpenID Connect Discovery server
-        configuration document. Trustmarks are listed in the trustmarks
-        element which contains a single <xref target="RFC7159">JSON</xref>
-        object. The keys of this JSON object are trustmark provider issuer
-        URLs and the values of this object are the corresponding trustmarks
-        for this IdP.</t>
+    <section anchor="discovery" title="Discovery">
+      <t>The IdP MAY list all of its available trustmarks as part of its
+      discovery document, such as the OpenID Connect Discovery server
+      configuration document. Trustmarks are listed in the trustmarks element
+      which contains a single <xref target="RFC7159">JSON</xref> object. The
+      keys of this JSON object are trustmark provider issuer URLs and the
+      values of this object are the corresponding trustmarks for this IdP.</t>
 
-        <figure>
-          <artwork><![CDATA[{
+      <figure>
+        <artwork><![CDATA[{
     "trustmark": {
-         "https://trustmark.example.org/": "https://trustmark.example.org/trustmark/idp.example.org/
+         "https://trustmark.example.org/": "https://trustmark.example.org/trustmark/idp.example.org/"
     }
 }]]></artwork>
-        </figure>
-      </section>
+      </figure>
     </section>
 
     <section anchor="Acknowledgements" title="Acknowledgements">
       <t>The authors would like to thank the members of the Vectors of Trust
       mailing list in the IETF for discussion and feedback on the concept and
-      document.</t>
+      document, and the members of the ISOC Trust and Identity team for their
+      support.</t>
     </section>
 
     <section anchor="IANA" title="IANA Considerations">
@@ -848,6 +892,21 @@
     </references>
 
     <section title="Document History">
+      <t>-02</t>
+
+      <t><list style="symbols">
+          <t>Converted C, M, and A values to use letters instead of numbers in
+          examples.</t>
+
+          <t>Commented out SAML example pending future update.</t>
+
+          <t>Defined guidance for when to use letters vs. numbers in category
+          values.</t>
+
+          <t>Restricted category demarcators to uppercase and values to
+          lowercase and digits.</t>
+        </list></t>
+
       <t>- 01</t>
 
       <t><list style="symbols">
