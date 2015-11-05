@@ -112,7 +112,9 @@
       mapped to each other. The information of several attributes can be
       folded into a vector component, while the vector itself can be folded
       into an assurance category. As such, the vectors of trust seeks to
-      complement, not replace, these other identity and trust mechanisms.</t>
+      complement, not replace, these other identity and trust mechanisms in
+      the larger identity ecosystem while providing a single value for RPs to
+      process.</t>
 
       <section title="Terminology">
         <t><list style="hanging">
@@ -153,8 +155,7 @@
       </section>
 
       <section anchor="Model" title="An Identity Model">
-        <t>This document assumes the following (incomplete) model for
-        identity.</t>
+        <t>This document assumes the following model for identity.</t>
 
         <t>The identity subject (also known as the user) is associated with an
         identity provider which acts as a trusted third party on behalf of the
@@ -215,7 +216,7 @@
       target="IANA"/>. It is anticipated that trust framework definitions will
       use this registry to define specialized components, though it is
       RECOMMENDED that trust frameworks re-use existing components wherever
-      possible. </t>
+      possible.</t>
 
       <t>The value for a given component within a vector of trust is defined
       by its demarcator character followed by a single digit or lowercase
@@ -238,10 +239,9 @@
 
       <section anchor="IdentityProofing" title="Identity Proofing">
         <t>The Identity Proofing dimension defines, overall, how strongly the
-        set of identity attributes have been verified and vetted, and how
-        strongly they are tied to a particular credential set. In other words,
-        this dimension describes how likely it is that a given digital
-        identity corresponds to a particular (real-world) identity
+        set of identity attributes have been verified and vetted. In other
+        words, this dimension describes how likely it is that a given digital
+        identity transaction corresponds to a particular (real-world) identity
         subject.</t>
 
         <t>This dimension SHALL be represented by the <spanx style="verb">P</spanx>
@@ -316,6 +316,13 @@
       These component values are referenced in a trustmark definition defined
       by [[ this document URL ]].</t>
 
+      <t>It is anticipated that trust frameworks and specific applications of
+      this specification will define their own component values. In order to
+      simplify processing by RPs, it is RECOMMENDED that trust framework
+      definitions carefully define component values such that they are
+      mutually exclusive or subsumptive in order to avoid repeated vector
+      components where possible.</t>
+
       <section title="Identity Proofing">
         <t><list style="hanging">
             <t hangText="P0">No proofing is done, data is not guaranteed to be
@@ -374,28 +381,47 @@
             <t hangText="Aa">No protection / unsigned bearer identifier (such
             as a session cookie)</t>
 
-            <t hangText="Ab">Signed and verifiable token, passed through the
-            browser</t>
+            <t hangText="Ab">Signed and verifiable assertion, passed through
+            the browser</t>
 
-            <t hangText="Ac">Signed and verifiable token, passed through a
+            <t hangText="Ac">Signed and verifiable assertion, passed through a
             back channel</t>
 
-            <t hangText="Ad">Token encrypted to the relying parties key and
-            audience protected</t>
+            <t hangText="Ad">Assertion encrypted to the relying parties key
+            and audience protected</t>
           </list></t>
       </section>
     </section>
 
     <section anchor="Combining" title="Communicating Vector Values to RPs">
-      <t>All four of these dimensions (and others, as they are defined in
-      extension work) MUST be combined into a single vector that can be
-      communicated across the wire unbroken. All vector components MUST be
-      individually available, MUST NOT be "collapsed" into a single value
-      without also presenting the constituent dimensions as well.</t>
+      <t>A vector of trust is designed to be used in the context of an
+      identity and authentication trasaction, providing information about the
+      context of a federated credential. The vector therefore needs to be able
+      to be communicated in the context of the federated credential in a way
+      that is strongly bound to the assertion representing the federated
+      credential.</t>
 
-      <t>When communicating the vectors across the wire, they MUST be
-      protected in transit and MUST signed by the asserting authority (such as
-      the IdP).</t>
+      <t>This vector has several requirements for use.</t>
+
+      <t><list style="symbols">
+          <t>All applicable vector components and values need to be combined
+          into a single vector.</t>
+
+          <t>The vector can be communicated across the wire unbroken and
+          untransformed. </t>
+
+          <t>All vector components need to remain individually available, not
+          "collapsed" into a single value.</t>
+
+          <t>The vector needs to be protected in transit.</t>
+
+          <t>The vector needs to be cryptographically bound to the assertion
+          which it is describing.</t>
+        </list></t>
+
+      <t>These requirements lead us to defining a simple string-based
+      representation of the vector that can be incorporated within a number of
+      different locations and protocols.</t>
 
       <section title="On the Wire Representation">
         <t>The vector MUST be represented as a period-separated ('.') list of
@@ -403,25 +429,26 @@
         occur multiple times within a single vector, with each component
         separated by periods. Multiple values for a component are considered
         an AND of the values. A specific value of a vector component MUST NOT
-        occur more than once in a single vector. In order to simplify
-        processing by RPs, it is RECOMMENDED that trust framework definitions
-        carefully define component values such that they are mutually
-        exclusive or subsumptive in order to avoid repeated vector components
-        where possible.</t>
+        occur more than once in a single vector. </t>
 
         <t>Vector components MAY be omitted from a vector. No holding space is
         left for an omitted vector component. If a vector component is
-        omitted, the IdP is making no claim for that category.</t>
-
-        <t>For example, the vector value <spanx style="verb">P1.Cc.Ab</spanx>
-        translates to "pseudonymous, proof of shared key, signed back-channel
-        verified token, and no claim made toward credential management" in the
-        context of this specification's <xref
-        target="default-components">definitions</xref>.</t>
+        omitted, the vector is making no claim for that component.</t>
 
         <t>Vector values MUST be communicated along side of a trustmark
         definition to give the components context. A vector value without
-        context is unprocessable.</t>
+        context is unprocessable, and vectors defined in different contexts
+        are not directly comparable as whole values.</t>
+
+        <t>For example, the vector value <spanx style="verb">P1.Cc.Ab</spanx>
+        translates to "pseudonymous, proof of shared key, signed
+        browser-passed verified assertion, and no claim made toward credential
+        management" in the context of this specification's <xref
+        target="default-components">definitions</xref>. The vector value of
+        <spanx style="verb">Cb.Mc.Cd.Ac</spanx> translates to "known device,
+        pull proofing require for issuance and rotation, cryptographic proof
+        of posession of a shared key, signed back-channel verified assertion,
+        and no claim made toward identity proofing" in the same context.</t>
       </section>
 
       <section anchor="OIDC" title="In OpenID Connect">
@@ -434,16 +461,22 @@
 
         <t>For example, the body of an ID token claiming "pseudonymous, proof
         of shared key, signed back-channel verified token, and no claim made
-        toward credential management" could look like this:</t>
+        toward credential management" could look like this JSON object. </t>
 
         <figure>
           <artwork><![CDATA[{ 
     "iss": "https://idp.example.com/", 
     "sub": "jondoe1234", 
-    "vot": "P1.Cc.Ab",
+    "vot": "P1.Cc.Ac",
     "vtm": "https://trustmark.example.org/trustmark/idp.example.com"
 }]]></artwork>
         </figure>
+
+        <t>The body of the ID token is signed and optionally encrypted using
+        JOSE, as per the OpenID Connect specification. By putting the <spanx
+        style="verb">vot</spanx> and <spanx style="verb">vtm</spanx> values
+        inside the ID token, the vector and its context are strongly bound to
+        the federated credential represented by the ID token.</t>
       </section>
 
       <!--
@@ -485,23 +518,28 @@
 
     <section anchor="RequestingVector" title="Requesting Vector Values">
       <t>In some identity protocols, the RP can request that particular
-      attributes be applied to a given identity transaction.</t>
+      attributes be applied to a given identity transaction. Using the same
+      </t>
 
       <section anchor="RequestingOIDC" title="In OpenID Connect">
         <t>In <xref target="OpenID">OpenID Connect</xref>, the client can
         request a set of acceptable VoT values with the <spanx style="verb">vtr</spanx>
         (vector of trust request) claim request as part of the Request Object.
         The value of this field is an array of JSON strings, each string
-        identifying an acceptable set of vector components. The components
-        within each vector are ANDed together while the individual vector
-        strings are ORed together. Vector request values MAY omit components,
-        indicating that any value is acceptable.</t>
+        identifying an acceptable set of vector components. The component
+        values within each vector are ANDed together while the separate
+        vectors are ORed together. For example, a list of vectors in the form
+        <spanx style="verb">["P1.Cb.Cc.Ab", "Ce.Ab"]</spanx> is stating that
+        either the full set of "P1 AND Cb AND Cc AND Ab" simultaneously OR the
+        set of "Ce AND Ab" simultaneously are acceptable to this RP for this
+        transaction.</t>
 
-        <figure>
-          <artwork><![CDATA[{
-    "vtr": ["P1.Cb.Cc.Ab", "Ce.Ab"]
-}]]></artwork>
-        </figure>
+        <t>Vector request values MAY omit components, indicating that any
+        value is acceptable for that component category.</t>
+
+        <t>The mechanism by which the IdP processes the <spanx style="verb">vtr</spanx>
+        and maps that to the authentication transaction are out of scope of
+        this specification.</t>
       </section>
     </section>
 
@@ -593,7 +631,8 @@
       configuration document. Trustmarks are listed in the trustmarks element
       which contains a single <xref target="RFC7159">JSON</xref> object. The
       keys of this JSON object are trustmark provider issuer URLs and the
-      values of this object are the corresponding trustmarks for this IdP.</t>
+      values of this object are the corresponding trustmark URLs for this
+      IdP.</t>
 
       <figure>
         <artwork><![CDATA[{
