@@ -168,9 +168,8 @@
         possession of a primary credential bound to the identity subject by
         identity provider (or an agent thereof) in such a way that the binding
         between the credential and the real-world user is a representation of
-        the identity proofing process performed by the the identity provider
-        (or an agent thereof) to verify the identity of the real-world
-        person.</t>
+        the identity proofing process performed by the identity provider (or
+        an agent thereof) to verify the identity of the real-world person.</t>
       </section>
 
       <section anchor="Architecture" title="Component Architecture">
@@ -226,7 +225,7 @@
       Categories which have a natural ordering SHOULD use digits, with <spanx
       style="verb">0</spanx> as the lowest value. Categories which do not have
       a natural ordering, or which can have an ambiguous ordering, SHOULD use
-      letters. Categorgies MAY use both letter style and number style value
+      letters. Categories MAY use both letter style and number style value
       indicators. For example, defining <spanx style="verb">0</spanx> as a
       special "empty" value and using letters such as <spanx style="verb">a</spanx>,
       <spanx style="verb">b</spanx>, <spanx style="verb">c</spanx> for normal
@@ -402,7 +401,7 @@
     <section anchor="CommunicatingVectors"
              title="Communicating Vector Values to RPs">
       <t>A vector of trust is designed to be used in the context of an
-      identity and authentication trasaction, providing information about the
+      identity and authentication transaction, providing information about the
       context of a federated credential. The vector therefore needs to be able
       to be communicated in the context of the federated credential in a way
       that is strongly bound to the assertion representing the federated
@@ -459,7 +458,7 @@
         target="default-components">definitions</xref>. The vector value of
         <spanx style="verb">Cb.Mc.Cd.Ac</spanx> translates to "known device,
         pull proofing require for issuance and rotation, cryptographic proof
-        of posession of a shared key, signed back-channel verified assertion,
+        of possession of a shared key, signed back-channel verified assertion,
         and no claim made toward identity proofing" in the same context.</t>
       </section>
 
@@ -590,8 +589,8 @@
           approved</t>
 
           <t hangText="M">Array of strings containing primary credential
-          management values for which the identitity provider has been
-          assessed and approved</t>
+          management values for which the identity provider has been assessed
+          and approved</t>
 
           <t hangText="A">Array of strings containing assertion strength
           values for which the identity provider has been assessed and
@@ -959,6 +958,8 @@
 
           <t>Restricted category demarcators to uppercase and values to
           lowercase and digits.</t>
+
+          <t>Applied clarifying editorial changes from list comments.</t>
         </list></t>
 
       <t>- 01</t>
