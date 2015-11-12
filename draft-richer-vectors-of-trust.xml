@@ -490,43 +490,69 @@
         the federated credential represented by the ID token.</t>
       </section>
 
-      <!--
       <section anchor="SAML" title="In SAML">
-        <t>In SAML a VoT vector is communicated as an
-        AuthenticationContextClassRef, a sample definition of which might look
-        something like this:</t>
+        <t>In SAML a VoT vector is communicated as an AuthenticationContextDeclRef. A vector is
+	represented by prefixing it with the urn urn:ietf:param:[TBD] and replacing '.' in th
+	vector with ':' to form a full URN. The AuthenticationContextDeclaration corresponding 
+	to a given vector is a AuthenticationContextDeclaration element containing an Extension 
+	element with components of the vector represented by the following XML schema:</t>
 
         <figure>
           <artwork><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema
-     targetNamespace="urn:x-vot:P1:C3:A2"
-     xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-     xmlns="urn:x-vot:P1.C3.A2"
-     finalDefault="extension"
-     blockDefault="substitution"
-     version="2.0">
-     <xs:redefine 
-         schemaLocation="saml-schema-authn-context-loa-profile.xsd"/>
- <xs:annotation>
-    <xs:documentation>VoT vector P1.C3.A2</xs:documentation>
- </xs:annotation>
- <xs:complexType name="GoverningAgreementRefType">
-    <xs:complexContent>
-       <xs:restriction base="GoverningAgreementRefType">
-          <xs:attribute name="governingAgreementRef"
-             type="xs:anyURI"
-             fixed="draft-ietf-vot-this-document-00.txt"
-             use="required"/>
-       </xs:restriction>
-    </xs:complexContent>
- </xs:complexType>
- </xs:redefine>
-</xs:schema>]]></artwork>
-        </figure>
-      </section>
-		  -->
-    </section>
+<xs:schema 
+    targetNamespace="urn:ietf:param:[TBD]:schema"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+   <xs:element name="Vector" type="VectorType">
+      <xs:annotation>
+         <xs:documentation>This represents a set of vector components.</xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   <xs:element name="Component" type="ComponentType">
+      <xs:annotation>
+         <xs:documentation>This represents a vector component.</xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   <xs:complexType name="VectorType">
+      <xs:sequence>
+         <xs:element ref="Component" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="ComponentType">
+      <xs:attribute name="name" use="required">
+         <xs:restriction base="xs:string"/>
+      </xs:attribute>
+      <xs:attribute name="value" use="required">
+         <xs:restriction base="xs:integer"/>
+      </xs:attribute> 
+   </xs:complexType>
+</xs:schema>
+]]></artwork>
+</figure>
+        <t>For instance the vector P1.C3,A2 is represented by the AuthenticationContextDeclRef URN 
+        urn:ietf:param:[TBD]:P1:C3:A2 (or urn:ietf:param:[TBD]:C3:P1:A2 or ...) which corresponds 
+	to the following AuthenticationContextDeclaration:</t>
 
+        <figure>
+          <artwork><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<AuthenticationContextDeclaration xmlns="urn:oasis:names:tc:SAML:2.0:ac">
+   <Extension>
+      <vot:Vector>
+         <vot:Component name="P" value="1"/>
+         <vot:Component name="C" value="3"/>
+         <vot:Component name="A" value="2"/>
+      </vot:Vector>
+   </Extension>
+</AuthenticationContextDeclaration>
+]]></artwork></figure>
+
+	<t>A VoT trustmark URI corresponds to an assurance certification URI defined according to 
+	<xref target="assurance-certification">TODO - assurance certification</xref>. Each trust
+	mark should be registered according to <xref target="RFCXXXX">RFCXXXX</xref>.</t>
+
+        <!-- justin: should we suggest folks register vtm's for OpenIDC too? the registry was 
+	constructed to support both saml and openidc after all -->
+    </section>
+</section>
     <section anchor="RequestingVector" title="Requesting Vector Values">
       <t>In some identity protocols, the RP can request that particular vector
       components be applied to a given identity transaction. Using the same
@@ -554,6 +580,13 @@
         <t>The mechanism by which the IdP processes the <spanx style="verb">vtr</spanx>
         and maps that to the authentication transaction are out of scope of
         this specification.</t>
+      </section>
+
+      <section anchor="RequestingSAML" title="In SAML">
+         <t>In <xref target="SAML">SAML</xref> the client can request a set of acceptable 
+	VoT values by including the corresponding AuthenticationContextDeclRef URIs together 
+	with an AuthenticationContextClassRef corresponding to the trust mark (cf below). The processing
+	rules in <xref target="SAMLAuthnCtx">SAMLAuthnCtx</xref> apply.</t>
       </section>
     </section>
 
