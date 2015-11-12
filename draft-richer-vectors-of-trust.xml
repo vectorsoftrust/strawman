@@ -71,7 +71,7 @@
       <t>This document defines a mechanism for measuring and signaling several
       aspects of digital identity transactions that are used to determine a
       level of trust in that transaction. In the past, there have been two
-      extremes of communicating authentication transaction information. </t>
+      extremes of communicating authentication transaction information.</t>
 
       <t>On one end, all attributes are communicated with full provenance and
       associated trust markings. This approach seeks to create a fully
@@ -237,7 +237,7 @@
       vector space. In other words, <spanx style="verb">1</spanx> is different
       from <spanx style="verb">2</spanx>, but it is dangerous to assume that
       <spanx style="verb">2</spanx> is always better than <spanx style="verb">1</spanx>
-      in a given transaction. </t>
+      in a given transaction.</t>
 
       <section anchor="IdentityProofing" title="Identity Proofing">
         <t>The Identity Proofing dimension defines, overall, how strongly the
@@ -414,7 +414,7 @@
           into a single vector.</t>
 
           <t>The vector can be communicated across the wire unbroken and
-          untransformed. </t>
+          untransformed.</t>
 
           <t>All vector components need to remain individually available, not
           "collapsed" into a single value.</t>
@@ -435,7 +435,7 @@
         occur multiple times within a single vector, with each component
         separated by periods. Multiple values for a component are considered
         an AND of the values. A specific value of a vector component MUST NOT
-        occur more than once in a single vector. </t>
+        occur more than once in a single vector.</t>
 
         <t>Vector components MAY be omitted from a vector. No holding space is
         left for an omitted vector component. If a vector component is
@@ -472,7 +472,7 @@
 
         <t>For example, the body of an ID token claiming "pseudonymous, proof
         of shared key, signed back-channel verified token, and no claim made
-        toward credential management" could look like this JSON object. </t>
+        toward credential management" could look like this JSON object.</t>
 
         <figure>
           <artwork><![CDATA[{ 
@@ -491,11 +491,13 @@
       </section>
 
       <section anchor="SAML" title="In SAML">
-        <t>In SAML a VoT vector is communicated as an AuthenticationContextDeclRef. A vector is
-	represented by prefixing it with the urn urn:ietf:param:[TBD] and replacing '.' in th
-	vector with ':' to form a full URN. The AuthenticationContextDeclaration corresponding 
-	to a given vector is a AuthenticationContextDeclaration element containing an Extension 
-	element with components of the vector represented by the following XML schema:</t>
+        <t>In SAML a VoT vector is communicated as an
+        AuthenticationContextDeclRef. A vector is represented by prefixing it
+        with the urn urn:ietf:param:[TBD] and replacing '.' in th vector with
+        ':' to form a full URN. The AuthenticationContextDeclaration
+        corresponding to a given vector is a AuthenticationContextDeclaration
+        element containing an Extension element with components of the vector
+        represented by the following XML schema:</t>
 
         <figure>
           <artwork><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -527,10 +529,12 @@
    </xs:complexType>
 </xs:schema>
 ]]></artwork>
-</figure>
-        <t>For instance the vector P1.C3,A2 is represented by the AuthenticationContextDeclRef URN 
-        urn:ietf:param:[TBD]:P1:C3:A2 (or urn:ietf:param:[TBD]:C3:P1:A2 or ...) which corresponds 
-	to the following AuthenticationContextDeclaration:</t>
+        </figure>
+
+        <t>For instance the vector P1.C3,A2 is represented by the
+        AuthenticationContextDeclRef URN urn:ietf:param:[TBD]:P1:C3:A2 (or
+        urn:ietf:param:[TBD]:C3:P1:A2 or ...) which corresponds to the
+        following AuthenticationContextDeclaration:</t>
 
         <figure>
           <artwork><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -543,16 +547,19 @@
       </vot:Vector>
    </Extension>
 </AuthenticationContextDeclaration>
-]]></artwork></figure>
+]]></artwork>
+        </figure>
 
-	<t>A VoT trustmark URI corresponds to an assurance certification URI defined according to 
-	<xref target="assurance-certification">TODO - assurance certification</xref>. Each trust
-	mark should be registered according to <xref target="RFCXXXX">RFCXXXX</xref>.</t>
+        <t>A VoT trustmark URI corresponds to an assurance certification URI
+        defined according to <xref target="assurance-certification">TODO -
+        assurance certification</xref>. Each trust mark should be registered
+        according to <xref target="RFCXXXX">RFCXXXX</xref>.</t>
 
         <!-- justin: should we suggest folks register vtm's for OpenIDC too? the registry was 
 	constructed to support both saml and openidc after all -->
+      </section>
     </section>
-</section>
+
     <section anchor="RequestingVector" title="Requesting Vector Values">
       <t>In some identity protocols, the RP can request that particular vector
       components be applied to a given identity transaction. Using the same
@@ -583,10 +590,12 @@
       </section>
 
       <section anchor="RequestingSAML" title="In SAML">
-         <t>In <xref target="SAML">SAML</xref> the client can request a set of acceptable 
-	VoT values by including the corresponding AuthenticationContextDeclRef URIs together 
-	with an AuthenticationContextClassRef corresponding to the trust mark (cf below). The processing
-	rules in <xref target="SAMLAuthnCtx">SAMLAuthnCtx</xref> apply.</t>
+        <t>In <xref target="SAML">SAML</xref> the client can request a set of
+        acceptable VoT values by including the corresponding
+        AuthenticationContextDeclRef URIs together with an
+        AuthenticationContextClassRef corresponding to the trust mark (cf
+        below). The processing rules in <xref
+        target="SAMLAuthnCtx">SAMLAuthnCtx</xref> apply.</t>
       </section>
     </section>
 
