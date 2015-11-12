@@ -326,6 +326,12 @@
       components where possible.</t>
 
       <section title="Identity Proofing">
+        <t>The identity proofing component of this vector definition
+        represents increasing scrutiny during the proofing process. Higher
+        levels are largely subsumptive of lower levels, such that <spanx
+        style="verb">P2</spanx> fulfills requirements for <spanx style="verb">P1</spanx>,
+        etc.</t>
+
         <t><list style="hanging">
             <t hangText="P0">No proofing is done, data is not guaranteed to be
             persistent across sessions</t>
@@ -343,6 +349,10 @@
       </section>
 
       <section title="Primary Credential Usage">
+        <t>The primary credential usage component of this vector definition
+        represents distinct categories of primary credential that MAY be used
+        together in a single transaction. </t>
+
         <t><list style="hanging">
             <t hangText="C0">No credential is used / anonymous public
             service</t>
@@ -366,6 +376,10 @@
       </section>
 
       <section title="Primary Credential Management">
+        <t>The primary credential management component of this vector
+        definition represents distinct categories of management that MAY be
+        considered separately or together in a single transaction.</t>
+
         <t><list style="hanging">
             <t hangText="Ma">Self-asserted primary credentials (user chooses
             their own credentials and must rotate or revoke them manually) /
@@ -382,6 +396,10 @@
       </section>
 
       <section title="Assertion Presentation">
+        <t>The assertion presentation component of this vector definition
+        represents distinct categories of assertion which are RECOMMENDED to
+        be used in a subsumptive manner but MAY be used together. </t>
+
         <t><list style="hanging">
             <t hangText="Aa">No protection / unsigned bearer identifier (such
             as a session cookie in a web browser)</t>
