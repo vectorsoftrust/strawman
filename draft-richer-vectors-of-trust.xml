@@ -115,13 +115,14 @@
       that can be communicated separately but in parallel with each other.
       This approach is both coarser grained than the distributed attributes
       model and finer grained than the single scalar model, with the hope that
-      it is a viable balance of expressivity and processability. Importantly,
-      these three levels of granularity can be mapped to each other. The
-      information of several attributes can be folded into a vector component,
-      while the vector itself can be folded into an assurance category. As
-      such, the vectors of trust seeks to complement, not replace, these other
-      identity and trust mechanisms in the larger identity ecosystem while
-      providing a single value for RPs to process.</t>
+      it is a viable balance of expressibility and processability.
+      Importantly, these three levels of granularity can be mapped to each
+      other. The information of several attributes can be folded into a vector
+      component, while the vector itself can be folded into an assurance
+      category. As such, the vectors of trust seeks to complement, not
+      replace, these other identity and trust mechanisms in the larger
+      identity ecosystem while providing a single value for RPs to
+      process.</t>
 
       <section title="Terminology">
         <t><list style="hanging">
