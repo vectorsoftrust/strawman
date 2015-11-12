@@ -511,11 +511,11 @@
       <section anchor="SAML" title="In SAML">
         <t>In SAML a VoT vector is communicated as an
         AuthenticationContextDeclRef. A vector is represented by prefixing it
-        with the urn urn:ietf:param:[TBD] and replacing '.' in th vector with
-        ':' to form a full URN. The AuthenticationContextDeclaration
-        corresponding to a given vector is a AuthenticationContextDeclaration
-        element containing an Extension element with components of the vector
-        represented by the following XML schema:</t>
+        with the urn urn:ietf:param:[TBD] to form a full URN. The
+        AuthenticationContextDeclaration corresponding to a given vector is a
+        AuthenticationContextDeclaration element containing an Extension
+        element with components of the vector represented by the following XML
+        schema:</t>
 
         <figure>
           <artwork><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -549,9 +549,9 @@
 ]]></artwork>
         </figure>
 
-        <t>For instance the vector P1.C3,A2 is represented by the
-        AuthenticationContextDeclRef URN urn:ietf:param:[TBD]:P1:C3:A2 (or
-        urn:ietf:param:[TBD]:C3:P1:A2 or ...) which corresponds to the
+        <t>For instance the vector P1.Cc.Ac is represented by the
+        AuthenticationContextDeclRef URN urn:ietf:param:[TBD]:P1.Cc.Ac (or
+        urn:ietf:param:[TBD]:Cc.P1.Ac or ...) which corresponds to the
         following AuthenticationContextDeclaration:</t>
 
         <figure>
@@ -560,8 +560,8 @@
    <Extension>
       <vot:Vector>
          <vot:Component name="P" value="1"/>
-         <vot:Component name="C" value="3"/>
-         <vot:Component name="A" value="2"/>
+         <vot:Component name="C" value="c"/>
+         <vot:Component name="A" value="c"/>
       </vot:Vector>
    </Extension>
 </AuthenticationContextDeclaration>
@@ -569,12 +569,8 @@
         </figure>
 
         <t>A VoT trustmark URI corresponds to an assurance certification URI
-        defined according to <xref target="assurance-certification">TODO -
-        assurance certification</xref>. Each trust mark should be registered
-        according to <xref target="RFCXXXX">RFCXXXX</xref>.</t>
-
-        <!-- justin: should we suggest folks register vtm's for OpenIDC too? the registry was 
-	constructed to support both saml and openidc after all -->
+        defined according to [[ TODO - assurance certification ]]. Each trust
+        mark should be registered according to [[ RFCXXXX ]].</t>
       </section>
     </section>
 
@@ -612,8 +608,7 @@
         acceptable VoT values by including the corresponding
         AuthenticationContextDeclRef URIs together with an
         AuthenticationContextClassRef corresponding to the trust mark (cf
-        below). The processing rules in <xref
-        target="SAMLAuthnCtx">SAMLAuthnCtx</xref> apply.</t>
+        below). The processing rules in [[ SAMLAuthnCtx ]] apply.</t>
       </section>
     </section>
 
@@ -1011,7 +1006,7 @@
           <t>Converted C, M, and A values to use letters instead of numbers in
           examples.</t>
 
-          <t>Commented out SAML example pending future update.</t>
+          <t>Updated SAML to a structured example pending future updates.</t>
 
           <t>Defined guidance for when to use letters vs. numbers in category
           values.</t>
