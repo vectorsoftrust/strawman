@@ -173,27 +173,28 @@
 
         <t>The real-world person represented by the identity subject is in
         possession of a primary credential bound to the identity subject by
-        identity provider (or an agent thereof) in such a way that the binding
-        between the credential and the real-world user is a representation of
-        the identity proofing process performed by the identity provider (or
-        an agent thereof) to verify the identity of the real-world person.
-        This is all carried by an identity assertion across the network to the
-        relying party during the authentication transaction.</t>
+        the identity provider (or an agent thereof) in such a way that the
+        binding between the credential and the real-world user is a
+        representation of the identity proofing process performed by the
+        identity provider (or an agent thereof) to verify the identity of the
+        real-world person. This is all carried by an identity assertion across
+        the network to the relying party during the authentication
+        transaction.</t>
       </section>
 
       <section anchor="Architecture" title="Component Architecture">
         <t>The term Vectors of Trust is based on the mathematical construct of
         a vector, which is defined as an item composed of multiple independent
-        values. </t>
+        values.</t>
 
         <t>An important goal for this work is to balance the need for
         simplicity (particularly on the part of the relying party) with the
         need for expressiveness. As such, this vector construct is designed to
         be composable and extensible.</t>
 
-        <t>All components of the vector construct MUST be orthogonal in the
-        sense that no aspect of a component overlap an aspect of another
-        component, as much as is possible.</t>
+        <t>All components of the vector construct MUST be orthogonal such that
+        no aspect of a component overlaps an aspect of another component, as
+        much as is possible.</t>
       </section>
     </section>
 
@@ -230,18 +231,19 @@
       style="verb">0</spanx> as the lowest value. Categories which do not have
       a natural ordering, or which can have an ambiguous ordering, SHOULD use
       letters. Categories MAY use both letter style and number style value
-      indicators. For example, defining <spanx style="verb">0</spanx> as a
-      special "empty" value and using letters such as <spanx style="verb">a</spanx>,
-      <spanx style="verb">b</spanx>, <spanx style="verb">c</spanx> for normal
-      values.</t>
+      indicators. For example, a category could define <spanx style="verb">0</spanx>
+      as a special "empty" value while using letters such as <spanx
+      style="verb">a</spanx>, <spanx style="verb">b</spanx>, <spanx
+      style="verb">c</spanx> for normal values can to differentiate between
+      these types of options.</t>
 
       <t>Regardless of the type of value indicator used, the values assigned
-      to each component of a vector MUST NOT be assumed as having inherent
-      ordinal properties when compared to the same or other components in the
-      vector space. In other words, <spanx style="verb">1</spanx> is different
-      from <spanx style="verb">2</spanx>, but it is dangerous to assume that
-      <spanx style="verb">2</spanx> is always better than <spanx style="verb">1</spanx>
-      in a given transaction.</t>
+      to each component of a vector MUST NOT be assumed always to have
+      inherent ordinal properties when compared to the same or other
+      components in the vector space. In other words, <spanx style="verb">1</spanx>
+      is different from <spanx style="verb">2</spanx>, but it is dangerous to
+      assume that <spanx style="verb">2</spanx> is always better than <spanx
+      style="verb">1</spanx> in a given transaction.</t>
 
       <section anchor="IdentityProofing" title="Identity Proofing">
         <t>The Identity Proofing dimension defines, overall, how strongly the
@@ -355,7 +357,7 @@
       <section title="Primary Credential Usage">
         <t>The primary credential usage component of this vector definition
         represents distinct categories of primary credential that MAY be used
-        together in a single transaction. </t>
+        together in a single transaction.</t>
 
         <t><list style="hanging">
             <t hangText="C0">No credential is used / anonymous public
@@ -402,7 +404,7 @@
       <section title="Assertion Presentation">
         <t>The assertion presentation component of this vector definition
         represents distinct categories of assertion which are RECOMMENDED to
-        be used in a subsumptive manner but MAY be used together. </t>
+        be used in a subsumptive manner but MAY be used together.</t>
 
         <t><list style="hanging">
             <t hangText="Aa">No protection / unsigned bearer identifier (such
@@ -605,7 +607,8 @@
         transaction.</t>
 
         <t>Vector request values MAY omit components, indicating that any
-        value is acceptable for that component category.</t>
+        value is acceptable for that component category, including omission of
+        that component in the response vector.</t>
 
         <t>The mechanism by which the IdP processes the <spanx style="verb">vtr</spanx>
         and maps that to the authentication transaction are out of scope of
@@ -683,7 +686,7 @@
       <t>An RP wishing to check the claims made by an IdP can fetch the
       information from the trustmark provider about what claims the IdP is
       allowed to make in the first place and process them accordingly. The RP
-      MAY cache the information returned from the trustmark URL. </t>
+      MAY cache the information returned from the trustmark URL.</t>
 
       <t>The means by which the RP decides which trustmark providers it trusts
       is out of scope for this specification and is generally configured out
