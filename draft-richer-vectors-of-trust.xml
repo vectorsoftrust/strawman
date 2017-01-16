@@ -533,29 +533,16 @@
 <xs:schema 
     targetNamespace="urn:ietf:param:[TBD]:schema"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-   <xs:element name="Vector" type="VectorType">
+   <xs:element name="Vector">
       <xs:annotation>
          <xs:documentation>This represents a set of vector components.</xs:documentation>
       </xs:annotation>
+      <xs:simpleType>
+         <xs:restriction base="xsd:token">
+            <xs:pattern value="([A-Z][0-9]+)(\.[A-Z][0-9]+)*"/> 
+         </xs:restriction>
+      </xs:simpleType>
    </xs:element>
-   <xs:element name="Component" type="ComponentType">
-      <xs:annotation>
-         <xs:documentation>This represents a vector component.</xs:documentation>
-      </xs:annotation>
-   </xs:element>
-   <xs:complexType name="VectorType">
-      <xs:sequence>
-         <xs:element ref="Component" minOccurs="1" maxOccurs="unbounded"/>
-      </xs:sequence>
-   </xs:complexType>
-   <xs:complexType name="ComponentType">
-      <xs:attribute name="name" use="required">
-         <xs:restriction base="xs:string"/>
-      </xs:attribute>
-      <xs:attribute name="value" use="required">
-         <xs:restriction base="xs:integer"/>
-      </xs:attribute> 
-   </xs:complexType>
 </xs:schema>
 ]]></artwork>
         </figure>
@@ -569,11 +556,7 @@
           <artwork><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <AuthenticationContextDeclaration xmlns="urn:oasis:names:tc:SAML:2.0:ac">
    <Extension>
-      <vot:Vector>
-         <vot:Component name="P" value="1"/>
-         <vot:Component name="C" value="c"/>
-         <vot:Component name="A" value="c"/>
-      </vot:Vector>
+      <vot:Vector>P1.C2.A0</vot:Vector>
    </Extension>
 </AuthenticationContextDeclaration>
 ]]></artwork>
