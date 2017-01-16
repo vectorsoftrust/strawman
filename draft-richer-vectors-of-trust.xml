@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="exp" docName="draft-richer-vectors-of-trust-02"
+<rfc category="exp" docName="draft-richer-vectors-of-trust-03"
      ipr="trust200902">
   <front>
     <title abbrev="vectors-of-trust">Vectors of Trust</title>
@@ -50,7 +50,7 @@
       </address>
     </author>
 
-    <date day="12" month="November" year="2015"/>
+    <date day="21" month="July" year="2016"/>
 
     <abstract>
       <t>This document defines a mechanism for describing and signaling
@@ -89,25 +89,26 @@
       <t>At the other extreme there are systems that collapse all of the
       attributes and aspects into a single scalar value that communicates, in
       sum, how much a transaction can be trusted. The NIST special publication
-      <xref target="SP-800-63">800-63</xref> defines a linear scale Level of
-      Assurance (LoA) measure that combines multiple attributes about an
-      identity transaction into such a single measure. While this definition
-      was originally narrowly targeted for a specific set of government use
-      cases, the LoA scale appeared to be applicable with a wide variety of
-      authentication scenarios in different domains. This has led to a
-      proliferation of incompatible interpretations of the same scale in
-      different contexts, preventing interoperability between these contexts
-      in spite of their common measurement. This system is also artificially
-      limited due to its original goals: since identity proofing strength
-      increases linearly along with credential strength in the LoA scale, this
-      scale is too limited for describing many valid and useful forms of an
-      identity transaction that do not fit the government's original model.
-      For example, an anonymously assigned hardware token can be used in cases
-      where the real world identity of the subject cannot be known, for
-      privacy reasons, but the credential itself can be highly trusted. This
-      is in contrast with a government employee accessing a government system,
-      where the identity of the individual would need to be highly proofed and
-      strongly credentialed at the same time.</t>
+      <xref target="SP-800-63-2">800-63</xref> version 2 defines a linear
+      scale Level of Assurance (LoA) measure that combines multiple attributes
+      about an identity transaction into such a single measure. While this
+      definition was originally narrowly targeted for a specific set of
+      government use cases, the LoA scale appeared to be applicable with a
+      wide variety of authentication scenarios in different domains. This has
+      led to a proliferation of incompatible interpretations of the same scale
+      in different contexts, preventing interoperability between each LoA
+      definition in spite of their common measurement. LoA is artificially
+      limited due to the original goal of creating a single linear scale.
+      Since identity proofing strength increases linearly along with
+      credential strength in the LoA scale, this scale is too limited for
+      describing many valid and useful forms of an identity transaction that
+      do not fit the government's original model. For example, an anonymously
+      assigned hardware token can be used in cases where the real world
+      identity of the subject cannot be known for privacy reasons, but the
+      credential itself can be highly trusted. This is in contrast with a
+      government employee accessing a government system, where the identity of
+      the individual would need to be highly proofed and strongly credentialed
+      at the same time.</t>
 
       <t>The Vectors of Trust (VoT) effort seeks to find a balance between
       these two extremes by creating a data model that combines attributes of
@@ -263,7 +264,7 @@
 
       <section anchor="Credential" title="Primary Credential Usage">
         <t>The primary credential usage dimension defines how strongly the
-        primary credential can be verified by the IdP. In other words, and how
+        primary credential can be verified by the IdP. In other words, how
         easily that credential could be spoofed or stolen.</t>
 
         <t>This dimension SHALL be represented by the <spanx style="verb">C</spanx>
@@ -280,12 +281,10 @@
       <section title="Primary Credential Management">
         <t>The primary credential management dimension conveys information
         about the expected lifecycle of the primary credential in use,
-        including its binding, rotation, and revocation. This component
-        defines how strongly the primary credential can be trusted to be
-        presented by the party represented by the credential based on
-        knowledge of the management of the credentials at the IdP. In other
-        words, this dimension describes how likely it is that the right person
-        is presenting the credential to the identity provider.</t>
+        including its binding, rotation, and revocation. In other words, the
+        use and strength of policies, practices, and security controls used in
+        managing the credential at the IdP and its binding to the intended
+        individual.</t>
 
         <t>This dimension SHALL be represented by the <spanx style="verb">M</spanx>
         demarcator and a single-character level value, such as <spanx
@@ -578,10 +577,6 @@
 </AuthenticationContextDeclaration>
 ]]></artwork>
         </figure>
-
-        <t>A VoT trustmark URI corresponds to an assurance certification URI
-        defined according to [[ TODO - assurance certification ]]. Each trust
-        mark should be registered according to [[ RFCXXXX ]].</t>
       </section>
     </section>
 
@@ -688,6 +683,13 @@
       allowed to make in the first place and process them accordingly. The RP
       MAY cache the information returned from the trustmark URL.</t>
 
+      <t>The operational aspects of the IdP MAY be included in the trustmark
+      definition. For example, if a trustmark can indicate that an IdP uses
+      multiple redundant hosts, encrypts all data at rest, or other
+      operational security mechanisms that affect the trustworthiness of
+      assertions made by the IdP. The definition of these additional aspects
+      is outside the scope of this specfication.</t>
+
       <t>The means by which the RP decides which trustmark providers it trusts
       is out of scope for this specification and is generally configured out
       of band.</t>
@@ -719,6 +721,7 @@
 
       <figure>
         <artwork><![CDATA[{
+    "iss": "https://idp.example.org/",
     "trustmark": {
          "https://trustmark.example.org/": "https://trustmark.example.org/trustmark/idp.example.org/"
     }
@@ -801,6 +804,13 @@
       MUST be carried together in a cryptographically bound mechanism such as
       a signed identity assertion. A signed OpenID Connect ID Token and a
       signed SAML assertion both fulfil this requirement.</t>
+
+      <t>The VoT framework provides a mechanism for describing and conveying
+      trust information. It does not define any policies for asserting the
+      values of the vector, nor does it define any policies for applying the
+      values of a vector to an RP's security decision process. These policies
+      MUST be agreed upon by the IdP and RP, and they SHOULD be expressed in
+      detail in an associated trust framework.</t>
     </section>
 
     <section anchor="Privacy" title="Privacy Considerations">
@@ -848,7 +858,7 @@
     </references>
 
     <references title="Informative References">
-      <reference anchor="SP-800-63">
+      <reference anchor="SP-800-63-2">
         <front>
           <title>Electronic Authentication Guideline</title>
 
@@ -1063,6 +1073,16 @@
     </references>
 
     <section title="Document History">
+      <t>-03</t>
+
+      <t><list style="symbols">
+          <t>Clarified language of LoA's in introduction.</t>
+
+          <t>Added note on operational security in trustmarks.</t>
+
+          <t>Removed empty sections and references.</t>
+        </list></t>
+
       <t>-02</t>
 
       <t><list style="symbols">
@@ -1103,11 +1123,6 @@
 
           <t>Solidified trustmark document definition.</t>
         </list></t>
-    </section>
-
-    <section title="Example Extension">
-      <t>To extend the vector component definitions, a specification MUST
-      register its contents in the</t>
     </section>
   </back>
 </rfc>
