@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="exp" docName="draft-richer-vectors-of-trust-03"
+<rfc category="exp" docName="draft-richer-vectors-of-trust-04"
      ipr="trust200902">
   <front>
     <title abbrev="vectors-of-trust">Vectors of Trust</title>
@@ -50,7 +50,7 @@
       </address>
     </author>
 
-    <date day="21" month="July" year="2016"/>
+    <date day="16" month="January" year="2017"/>
 
     <abstract>
       <t>This document defines a mechanism for describing and signaling
@@ -383,7 +383,9 @@
       <section title="Primary Credential Management">
         <t>The primary credential management component of this vector
         definition represents distinct categories of management that MAY be
-        considered separately or together in a single transaction.</t>
+        considered separately or together in a single transaction. Many trust
+        framework deployments MAY use a single value for this component as a
+        baseline for all transactions and thereby omit it.</t>
 
         <t><list style="hanging">
             <t hangText="Ma">Self-asserted primary credentials (user chooses
@@ -538,7 +540,7 @@
       </xs:annotation>
       <xs:simpleType>
          <xs:restriction base="xsd:token">
-            <xs:pattern value="([A-Z][0-9]+)(\.[A-Z][0-9]+)*"/> 
+            <xs:pattern value="([A-Z][a-z0-9])(\.[A-Z][a-z0-9])*"/> 
          </xs:restriction>
       </xs:simpleType>
    </xs:element>
@@ -555,7 +557,7 @@
           <artwork><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <AuthenticationContextDeclaration xmlns="urn:oasis:names:tc:SAML:2.0:ac">
    <Extension>
-      <vot:Vector>P1.C2.A0</vot:Vector>
+      <vot:Vector>P1.Cc.Ac</vot:Vector>
    </Extension>
 </AuthenticationContextDeclaration>
 ]]></artwork>
@@ -598,7 +600,7 @@
         acceptable VoT values by including the corresponding
         AuthenticationContextDeclRef URIs together with an
         AuthenticationContextClassRef corresponding to the trust mark (cf
-        below). The processing rules in [[ SAMLAuthnCtx ]] apply.</t>
+        below). The processing rules in <xref target="SAML"/> apply.</t>
       </section>
     </section>
 
@@ -1056,6 +1058,12 @@
     </references>
 
     <section title="Document History">
+      <t>-04</t>
+
+      <t><list style="symbols">
+          <t>Updated SAML example to be consistent.</t>
+        </list></t>
+
       <t>-03</t>
 
       <t><list style="symbols">
