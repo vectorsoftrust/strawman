@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="exp" docName="draft-richer-vectors-of-trust-04"
+<rfc category="exp" docName="draft-richer-vectors-of-trust-05"
      ipr="trust200902">
   <front>
     <title abbrev="vectors-of-trust">Vectors of Trust</title>
@@ -50,7 +50,7 @@
       </address>
     </author>
 
-    <date day="16" month="January" year="2017"/>
+    <date day="3" month="April" year="2017"/>
 
     <abstract>
       <t>This document defines a mechanism for describing and signaling
@@ -471,14 +471,15 @@
         not used.</t>
 
         <t>Vector values MUST be communicated along side of a trustmark
-        definition to give the components context. A vector value without
-        context is unprocessable, and vectors defined in different contexts
-        are not directly comparable as whole values. Different trustmarks MAY
-        re-use component definitions (including their values), allowing
-        comparison of individual components across contexts without requiring
-        complete understanding of all aspects of a context. The proper
-        processing of such cross-context values is outside the scope of this
-        specification.</t>
+        definition to give the components context. The trustmark MUST be
+        cryptographically bound to the vector value, such as in a signed
+        assertion. A vector value without context is unprocessable, and
+        vectors defined in different contexts are not directly comparable as
+        whole values. Different trustmarks MAY re-use component definitions
+        (including their values), allowing comparison of individual components
+        across contexts without requiring complete understanding of all
+        aspects of a context. The proper processing of such cross-context
+        values is outside the scope of this specification.</t>
 
         <t>For example, the vector value <spanx style="verb">P1.Cc.Ab</spanx>
         translates to "pseudonymous, proof of shared key, signed
@@ -628,7 +629,13 @@
           provider that issues this trustmark. The URL that a trustmark is
           fetched from MUST start with the <spanx style="verb">iss</spanx> URL
           in this field. This MUST be an HTTPS URL.</t>
+        </list></t>
 
+      <t>Vector component values offered by this IdP are be listed in a using
+      their demarcator. For the four component categories defined in this
+      specification:</t>
+
+      <t><list style="hanging">
           <t hangText="P">Array of strings containing identity proofing values
           for which the identity provider has been assessed and approved.</t>
 
@@ -644,9 +651,6 @@
           values for which the identity provider has been assessed and
           approved.</t>
         </list></t>
-
-      <t>Additional vector component values MUST be listed in a similar
-      fashion using their demarcator.</t>
 
       <t>For example, the following trustmark provided by the
       trustmark.example.org organization applies to the idp.example.org
@@ -723,70 +727,139 @@
 
     <section anchor="IANA" title="IANA Considerations">
       <t>This specification creates one registry and registers several values
-      into an existing registry.</t>
+      into existing registries.</t>
 
       <section title="Vector Of Trust Components Registry">
-        <t>The Vector of Trust Components Registry contains the definitions of
-        vector components and their associated demarcators.</t>
+        <t>This specification establishes the Vectors of Trust Components
+        Registry. </t>
 
-        <t><list style="symbols">
-            <t>Demarcator Symbol: P</t>
+        <t>Component demarcators are registered by <xref
+        target="RFC5226">Specification Required</xref> after a two-week review
+        period on the vot@ietf.org mailing list, on the advice of one or more
+        Designated Experts.</t>
 
-            <t>Description: Identity proofing</t>
+        <t>Criteria that should be applied by the Designated Experts includes
+        determining whether the proposed registration duplicates existing
+        functionality, whether it is likely to be of general applicability or
+        whether it is useful only for a single application, and whether the
+        registration description is clear.</t>
 
-            <t>Document: [[ this document ]]</t>
-          </list><list style="symbols">
-            <t>Demarcator Symbol: C</t>
+        <t>Registration requests sent to the mailing list for review should
+        use an appropriate subject (e.g., "Request to register Vector of Trust
+        Component name: example"). Within the review period, the Designated
+        Expert(s) will either approve or deny the registration request,
+        communicating this decision to the review list and IANA. Denials
+        should include an explanation and, if applicable, suggestions as to
+        how to make the request successful. IANA must only accept registry
+        updates from the Designated Expert(s) and should direct all requests
+        for registration to the review mailing list.</t>
 
-            <t>Description: Primary credential usage</t>
+        <section anchor="ComponentTemplate" title="Registration Template">
+          <t><list style="hanging">
+              <t hangText="Demarcator Symbol"><vspace/>An uppercase ASCII
+              letter in the range [A-Z] representing this component (e.g.,
+              "X").</t>
 
-            <t>Document: [[ this document ]]</t>
-          </list><list style="symbols">
-            <t>Demarcator Symbol: M</t>
+              <t hangText="Description:"><vspace/> Brief description of the
+              component (e.g., "Example description").</t>
 
-            <t>Description: Primary credential management</t>
+              <t hangText="Change controller:"><vspace/> For Standards Track
+              RFCs, state "IESG". For other documents, give the name of the
+              responsible party. Other details (e.g., postal address, email
+              address, home page URI) may also be included.</t>
 
-            <t>Document: [[ this document ]]</t>
-          </list><list style="symbols">
-            <t>Demarcator Symbol: A</t>
+              <t hangText="Specification document(s):"><vspace/> Reference to
+              the document(s) that specify the token endpoint authorization
+              method, preferably including a URI that can be used to retrieve
+              a copy of the document(s). An indication of the relevant
+              sections may also be included but is not required.</t>
+            </list></t>
+        </section>
 
-            <t>Description: Assertion presentation</t>
+        <section title="Initial Registry Contents">
+          <t>The Vector of Trust Components Registry contains the definitions
+          of vector components and their associated demarcators.</t>
 
-            <t>Document: [[ this document ]]</t>
-          </list></t>
-      </section>
+          <t><list style="symbols">
+              <t>Demarcator Symbol: P</t>
 
-      <section title="Additions to JWT Claims Registry">
-        <t>This specification adds the following values to the JWT Claims
-        Registry.</t>
+              <t>Description: Identity proofing</t>
 
-        <t><list style="symbols">
-            <t>Claim name: vot</t>
+              <t>Change Controller: IESG</t>
 
-            <t>Description: Vector of Trust value</t>
+              <t>Specification document(s):: [[ this document ]]</t>
+            </list><list style="symbols">
+              <t>Demarcator Symbol: C</t>
 
-            <t>Document: [[ this document ]]</t>
-          </list><list style="symbols">
-            <t>Demarcator Symbol: vtm</t>
+              <t>Description: Primary credential usage</t>
 
-            <t>Description: Vector of Trust Trustmark</t>
+              <t>Change Controller: IESG</t>
 
-            <t>Document: [[ this document ]]</t>
-          </list><list style="symbols">
-            <t>Demarcator Symbol: vtr</t>
+              <t>Specification document(s):: [[ this document ]]</t>
+            </list><list style="symbols">
+              <t>Demarcator Symbol: M</t>
 
-            <t>Description: Vector of Trust Request</t>
+              <t>Description: Primary credential management</t>
 
-            <t>Document: [[ this document ]]</t>
-          </list></t>
+              <t>Change Controller: IESG</t>
+
+              <t>Specification document(s):: [[ this document ]]</t>
+            </list><list style="symbols">
+              <t>Demarcator Symbol: A</t>
+
+              <t>Description: Assertion presentation</t>
+
+              <t>Change Controller: IESG</t>
+
+              <t>Specification document(s):: [[ this document ]]</t>
+            </list></t>
+        </section>
+
+        <section title="Additions to JWT Claims Registry">
+          <t>This specification adds the following values to the JSON Web
+          Token Claims Registry established by <xref target="RFC7519"/>.</t>
+
+          <t><list style="symbols">
+              <t>Claim name: vot</t>
+
+              <t>Description: Vector of Trust value</t>
+
+              <t>Change Controller: IESG</t>
+
+              <t>Document: [[ this document ]]</t>
+            </list><list style="symbols">
+              <t>Demarcator Symbol: vtm</t>
+
+              <t>Description: Vector of Trust trustmark</t>
+
+              <t>Change Controller: IESG</t>
+
+              <t>Document: [[ this document ]]</t>
+            </list></t>
+        </section>
+
+        <section title="Additions to the OAuth ">
+          <t>This specification adds the following values to the OAuth
+          Parameters Registry established by <xref target="RFC6749"/>.</t>
+
+          <t><list style="symbols">
+              <t>Demarcator Symbol: vtr</t>
+
+              <t>Description: Vector of Trust request</t>
+
+              <t>Change Controller: IESG</t>
+
+              <t>Document: [[ this document ]]</t>
+            </list></t>
+        </section>
       </section>
     </section>
 
     <section anchor="Security" title="Security Considerations">
       <t>The vector of trust value MUST be cryptographically protected in
       transit, using TLS as described in <xref target="BCP195"/>. The vector
-      of trust value MUST be associated with a trustmark marker, and the two
-      MUST be carried together in a cryptographically bound mechanism such as
+      of trust value must be associated with a trustmark marker, and the two
+      must be carried together in a cryptographically bound mechanism such as
       a signed identity assertion. A signed OpenID Connect ID Token and a
       signed SAML assertion both fulfil this requirement.</t>
 
@@ -794,18 +867,18 @@
       trust information. It does not define any policies for asserting the
       values of the vector, nor does it define any policies for applying the
       values of a vector to an RP's security decision process. These policies
-      MUST be agreed upon by the IdP and RP, and they SHOULD be expressed in
-      detail in an associated trust framework.</t>
+      must be agreed upon by the IdP and RP, and they should be expressed in
+      detail in an associated human-readable trust framework document.</t>
     </section>
 
     <section anchor="Privacy" title="Privacy Considerations">
       <t>By design, vector of trust values contain information about the
       user's authentication and associations that can be made thereto.
       Therefore, all aspects of a vector of trust contain potentially
-      privacy-sensitive information and MUST be guarded as such. Even in the
+      privacy-sensitive information and must be guarded as such. Even in the
       absence of specific attributes about a user, knowledge that the user has
       been highly proofed or issued a strong token could provide more
-      information about the user than was intended. It is RECOMMENDED that
+      information about the user than was intended. It is recommended that
       systems in general use the minimum vectors applicable to their use case
       in order to prevent inadvertent information disclosure.</t>
     </section>
@@ -816,6 +889,12 @@
       <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml'?>
 
       <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7159.xml'?>
+
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7519.xml'?>
+
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5226.xml'?>
+
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6749.xml'?>
 
       <reference anchor="OpenID">
         <front>
@@ -1058,6 +1137,14 @@
     </references>
 
     <section title="Document History">
+      <t>-05</t>
+
+      <t><list style="symbols">
+          <t>Updated IANA considerations section to include instructions.</t>
+
+          <t>Made security and privacy considerations non-normative.</t>
+        </list></t>
+
       <t>-04</t>
 
       <t><list style="symbols">
