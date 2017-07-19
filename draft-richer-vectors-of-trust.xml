@@ -90,7 +90,7 @@
       attributes and aspects into a single scalar value that communicates, in
       sum, how much a transaction can be trusted. The NIST special publication
       <xref target="SP-800-63-2">800-63</xref> version 2 defines a linear
-      scale Level of Assurance (LoA) measure that combines multiple attributes
+      scale Level of Assurance (LoA) measure that combines multiple aspects
       about an identity transaction into such a single measure. While this
       definition was originally narrowly targeted for a specific set of
       government use cases, the LoA scale appeared to be applicable with a
@@ -246,6 +246,10 @@
       assume that <spanx style="verb">2</spanx> is always better than <spanx
       style="verb">1</spanx> in a given transaction.</t>
 
+      <t>Each component MAY be repeated with multiple different values within
+      a single vector. The same component and value MUST NOT be repeated
+      within a single vector.</t>
+
       <section anchor="IdentityProofing" title="Identity Proofing">
         <t>The Identity Proofing dimension defines, overall, how strongly the
         set of identity attributes have been verified and vetted. In other
@@ -259,7 +263,8 @@
         definitions of identity proofing will have a natural ordering, as more
         or less stringent proofing can be applied to an individual. In such
         cases it is RECOMMENDED that a digit style value be used for this
-        component.</t>
+        component and that only a single value be allowed to be communicated
+        in a transaction. </t>
       </section>
 
       <section anchor="Credential" title="Primary Credential Usage">
@@ -273,9 +278,9 @@
         definitions of credential usage will not have an overall natural
         ordering, as there may be several equivalent classes described within
         a trust framework. In such cases it is RECOMMENDED that a letter style
-        value be used for this component. Multiple credential usage factors
-        MAY be communicated simultaneously, such as when Multi-Factor
-        Authentication is used.</t>
+        value be used for this component and that multiple distinct credential
+        usage factors be allowed to be communicated simultaneously, such as
+        when Multi-Factor Authentication is used.</t>
       </section>
 
       <section title="Primary Credential Management">
@@ -292,7 +297,8 @@
         definitions of credential management will not have an overall natural
         ordering, though there can be preference and comparison between values
         in some circumstances. In such cases it is RECOMMENDED that a letter
-        style value be used for this component.</t>
+        style value be used for this component and that multiple distinct
+        values be allowed to be communicated simultaneously.</t>
       </section>
 
       <section anchor="AssertionPresentation" title="Assertion Presentation">
@@ -311,31 +317,29 @@
         demarcator and a level value, such as <spanx style="verb">Aa</spanx>,
         <spanx style="verb">Ab</spanx>, etc. Most definitions of assertion
         presentation will not have an overall natural ordering. In such cases,
-        it is RECOMMENDED that a letter style value be used for this
-        component.</t>
+        it is RECOMMENDED that a letter style value be used for this component
+        and that multiple values be allowed to be communicated
+        simultaneously.</t>
       </section>
     </section>
 
     <section anchor="default-components"
-             title="Vectors of Trust Initial Component Value Definitions">
+             title="Vectors of Trust Default Component Value Definitions">
       <t>This specification defines the following general-purpose component
       definitions, which MAY be used when a more specific set is unavailable.
       These component values are referenced in a trustmark definition defined
       by [[ this document URL ]].</t>
 
-      <t>It is anticipated that trust frameworks and specific applications of
-      this specification will define their own component values. In order to
-      simplify processing by RPs, it is RECOMMENDED that trust framework
-      definitions carefully define component values such that they are
-      mutually exclusive or subsumptive in order to avoid repeated vector
-      components where possible.</t>
+      <t>Extensions of this specification SHOULD define their own component
+      values as described in <xref target="extension"/>.</t>
 
       <section title="Identity Proofing">
         <t>The identity proofing component of this vector definition
         represents increasing scrutiny during the proofing process. Higher
         levels are largely subsumptive of lower levels, such that <spanx
         style="verb">P2</spanx> fulfills requirements for <spanx style="verb">P1</spanx>,
-        etc.</t>
+        etc. Mutltiple distinct values from this category MUST NOT be used in
+        a single transaction.</t>
 
         <t><list style="hanging">
             <t hangText="P0">No proofing is done, data is not guaranteed to be
@@ -356,7 +360,8 @@
       <section title="Primary Credential Usage">
         <t>The primary credential usage component of this vector definition
         represents distinct categories of primary credential that MAY be used
-        together in a single transaction.</t>
+        together in a single transaction. Multiple distinct values from this
+        category MAY be used in a single transaction.</t>
 
         <t><list style="hanging">
             <t hangText="C0">No credential is used / anonymous public
@@ -385,7 +390,8 @@
         definition represents distinct categories of management that MAY be
         considered separately or together in a single transaction. Many trust
         framework deployments MAY use a single value for this component as a
-        baseline for all transactions and thereby omit it.</t>
+        baseline for all transactions and thereby omit it. Multiple distinct
+        values from this category MAY be used in a single transaction.</t>
 
         <t><list style="hanging">
             <t hangText="Ma">Self-asserted primary credentials (user chooses
@@ -405,7 +411,9 @@
       <section title="Assertion Presentation">
         <t>The assertion presentation component of this vector definition
         represents distinct categories of assertion which are RECOMMENDED to
-        be used in a subsumptive manner but MAY be used together.</t>
+        be used in a subsumptive manner but MAY be used together. Multiple
+        distinct values from this category MAY be used in a single
+        transaction.</t>
 
         <t><list style="hanging">
             <t hangText="Aa">No protection / unsigned bearer identifier (such
@@ -522,12 +530,12 @@
       </section>
 
       <section anchor="SAML" title="In SAML">
-        <t>In SAML, a vector is communicated as an
-        AuthenticationContextDeclRef. A vector is represented by prefixing it
-        with the urn urn:ietf:param:[TBD] to form a full URN. The
-        AuthenticationContextDeclaration corresponding to a given vector is a
-        AuthenticationContextDeclaration element containing an Extension
-        element with components of the vector represented by the following XML
+        <t>In SAML, a vector is communicated as an <spanx style="verb">AuthenticationContextDeclRef</spanx>.
+        A vector is represented by prefixing it with the <spanx style="verb">urn urn:ietf:param:[TBD]</spanx>
+        to form a full URN. The <spanx style="verb">AuthenticationContextDeclaration</spanx>
+        corresponding to a given vector is a <spanx style="verb">AuthenticationContextDeclaration</spanx>
+        element containing an <spanx style="verb">Extension</spanx> element
+        with components of the vector represented by the following XML
         schema:</t>
 
         <figure>
@@ -550,9 +558,9 @@
         </figure>
 
         <t>For instance the vector P1.Cc.Ac is represented by the
-        AuthenticationContextDeclRef URN urn:ietf:param:[TBD]:P1.Cc.Ac (or
-        urn:ietf:param:[TBD]:Cc.P1.Ac or ...) which corresponds to the
-        following AuthenticationContextDeclaration:</t>
+        AuthenticationContextDeclRef URN <spanx style="verb">urn:ietf:param:[TBD]:P1.Cc.Ac</spanx>
+        (or <spanx style="verb">urn:ietf:param:[TBD]:Cc.P1.Ac</spanx> or ...)
+        which corresponds to the following <spanx style="verb">AuthenticationContextDeclaration</spanx>:</t>
 
         <figure>
           <artwork><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -598,10 +606,11 @@
 
       <section anchor="RequestingSAML" title="In SAML">
         <t>In <xref target="SAML">SAML</xref> the client can request a set of
-        acceptable VoT values by including the corresponding
-        AuthenticationContextDeclRef URIs together with an
-        AuthenticationContextClassRef corresponding to the trust mark (cf
-        below). The processing rules in <xref target="SAML"/> apply.</t>
+        acceptable VoT values by including the corresponding <spanx
+        style="verb">AuthenticationContextDeclRef</spanx> URIs together with
+        an <spanx style="verb">AuthenticationContextClassRef</spanx>
+        corresponding to the trust mark (cf below). The processing rules in
+        <xref target="SAML"/> apply.</t>
       </section>
     </section>
 
@@ -711,11 +720,52 @@
       <figure>
         <artwork><![CDATA[{
     "iss": "https://idp.example.org/",
-    "trustmark": {
-         "https://trustmark.example.org/": "https://trustmark.example.org/trustmark/idp.example.org/"
+    "trustmarks": {
+         "https://trustmark.example.org/": "https://trustmark.example.org/trustmark/idp.example.org",
+         "https://trust.example.net/": "https://trust.example.net/trustmark/idp.example.org"
     }
 }]]></artwork>
       </figure>
+    </section>
+
+    <section anchor="extension" title="Defining New Vector Values">
+      <t>Vectors of Trust is meant to be a flexible and reusable framework for
+      communicating authentication data between networked parties in an
+      identity federation protocol. However, the exact nature of the
+      information needed is reliant on the parties requiring the information
+      and the relationship between them. While this document does define a
+      usable default set of values, it is anticipated that many situations
+      will require an extension of this specification for their own use.</t>
+
+      <t>Components categories such as those defined in <xref
+      target="Components"/> are intended to be general purpose and reusable in
+      a variety of circumstances. Extension specifications SHOULD re-use
+      existing category definitions where possible. Extensions MAY create
+      additional categories where needed by using the registry defined in
+      <xref target="IANA"/>. The registry encourages re-use and discovery of
+      existing categories across different implementations. In other words,
+      the <spanx style="verb">P</spanx> category in another framework SHOULD
+      be used for identity proofing and related information.</t>
+
+      <t>The values of components such as those defined in <xref
+      target="default-components"/> are intended to be contextual to the
+      defining trust document. While this specification's component values are
+      intended to be general-purpose and extensions MAY re-use the values and
+      their definitions, extensions MUST define all allowable values. As these
+      values are always interpreted in the context of a trustmark, these
+      values are not recorded in a central registry. Consequently, a <spanx
+      style="verb">P1</spanx> value from one framework and a <spanx
+      style="verb">P1</spanx> value from another framework could have very
+      different interpretations depending on their contextual trustmark
+      documents. </t>
+
+      <t>Extensions to this specification SHOULD choose either a numerical
+      ordering or a group category approach to component values as described
+      in . Extensions to this specification MUST specify whether multiple
+      values are allowed for each category, and while any component category
+      is generally allowed to have multiple distinct values, a specific
+      definition of a set of values in an extension MAY limit a given
+      component category to a single value per transaction.</t>
     </section>
 
     <section anchor="Acknowledgements" title="Acknowledgements">
@@ -731,7 +781,7 @@
 
       <section title="Vector Of Trust Components Registry">
         <t>This specification establishes the Vectors of Trust Components
-        Registry. </t>
+        Registry.</t>
 
         <t>Component demarcators are registered by <xref
         target="RFC5226">Specification Required</xref> after a two-week review
@@ -814,44 +864,44 @@
               <t>Specification document(s):: [[ this document ]]</t>
             </list></t>
         </section>
+      </section>
 
-        <section title="Additions to JWT Claims Registry">
-          <t>This specification adds the following values to the JSON Web
-          Token Claims Registry established by <xref target="RFC7519"/>.</t>
+      <section title="Additions to the OAuth Parameters Registry">
+        <t>This specification adds the following values to the OAuth
+        Parameters Registry established by <xref target="RFC6749"/>.</t>
 
-          <t><list style="symbols">
-              <t>Claim name: vot</t>
+        <t><list style="symbols">
+            <t>Demarcator Symbol: vtr</t>
 
-              <t>Description: Vector of Trust value</t>
+            <t>Description: Vector of Trust request</t>
 
-              <t>Change Controller: IESG</t>
+            <t>Change Controller: IESG</t>
 
-              <t>Document: [[ this document ]]</t>
-            </list><list style="symbols">
-              <t>Demarcator Symbol: vtm</t>
+            <t>Document: [[ this document ]]</t>
+          </list></t>
+      </section>
 
-              <t>Description: Vector of Trust trustmark</t>
+      <section title="Additions to JWT Claims Registry">
+        <t>This specification adds the following values to the JSON Web Token
+        Claims Registry established by <xref target="RFC7519"/>.</t>
 
-              <t>Change Controller: IESG</t>
+        <t><list style="symbols">
+            <t>Claim name: vot</t>
 
-              <t>Document: [[ this document ]]</t>
-            </list></t>
-        </section>
+            <t>Description: Vector of Trust value</t>
 
-        <section title="Additions to the OAuth ">
-          <t>This specification adds the following values to the OAuth
-          Parameters Registry established by <xref target="RFC6749"/>.</t>
+            <t>Change Controller: IESG</t>
 
-          <t><list style="symbols">
-              <t>Demarcator Symbol: vtr</t>
+            <t>Document: [[ this document ]]</t>
+          </list><list style="symbols">
+            <t>Demarcator Symbol: vtm</t>
 
-              <t>Description: Vector of Trust request</t>
+            <t>Description: Vector of Trust trustmark</t>
 
-              <t>Change Controller: IESG</t>
+            <t>Change Controller: IESG</t>
 
-              <t>Document: [[ this document ]]</t>
-            </list></t>
-        </section>
+            <t>Document: [[ this document ]]</t>
+          </list></t>
       </section>
     </section>
 
@@ -1137,6 +1187,15 @@
     </references>
 
     <section title="Document History">
+      <t>-06</t>
+
+      <t><list style="symbols">
+          <t>Added section on extensions to VoT.</t>
+
+          <t>Made it so that every component category could be
+          multi-valued.</t>
+        </list></t>
+
       <t>-05</t>
 
       <t><list style="symbols">
