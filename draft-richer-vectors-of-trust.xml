@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="exp" docName="draft-richer-vectors-of-trust-05"
+<rfc category="std" docName="draft-richer-vectors-of-trust-07"
      ipr="trust200902">
   <front>
     <title abbrev="vectors-of-trust">Vectors of Trust</title>
@@ -50,7 +50,7 @@
       </address>
     </author>
 
-    <date day="3" month="April" year="2017"/>
+    <date day="08" month="December" year="2017"/>
 
     <abstract>
       <t>This document defines a mechanism for describing and signaling
@@ -68,62 +68,62 @@
 
   <middle>
     <section anchor="Introduction" title="Introduction">
-      <t>This document defines a mechanism for measuring and signaling several
-      aspects of digital identity and authentication transactions that are
-      used to determine a level of trust in that transaction. In the past,
-      there have been two extremes of communicating authentication transaction
-      information.</t>
+      <t>Methods for measuring trust in digital identity transactions have
+      historically fallen into two main categories: either all measurements
+      are combined into a single scalar value, or trust decisions are
+      calculated locally based on a detailed set of attribute metadata. This
+      document defines a method of conveying trust information that is more
+      expressive than a single value but less complex than comprehensive
+      attribute metadata. </t>
 
-      <t>At one extreme, all attributes can be communicated with full
-      provenance and associated trust markings. This approach seeks to create
-      a fully-distributed attribute system to support functions such as
-      attribute based access control (ABAC). These attributes can be used to
-      describe the end user, the identity provider, the relying party, or even
-      the transaction itself. While the information that can be expressed in
-      this model is incredibly detailed and robust, the complexity of such a
-      system is often prohibitive to realize, especially across security
-      domains. In particular, a large burden is placed on relying parties
-      needing to process the sea of disparate attributes when making a
-      security decision.</t>
+      <t>Prior to the <xref target="SP-800-63-3">third edition</xref>
+      published in 2017, <xref target="SP-800-63-2">NIST Special Publication
+      800-63</xref> used a single scalar measurement of trust called a Level
+      of Assurance (LoA). An LoA can be used to compare different transactions
+      within a system at a coarse level. For instance, an LoA4 transaction is
+      generally considered more trusted (across all measured categories) than
+      an LoA2 transaction. The LoA for a given transaction is computed by the
+      identity provider (IdP) and is consumed by a relying party (RP). Since
+      the trust measurement is a simple numeric value, it&rsquo;s trivial for
+      RPs to process and compare. However, since each LoA encompasses many
+      different aspects of a transaction, it can&rsquo;t express many
+      real-world situations. For instance, an anonymous user account might
+      have a very strong credential, such as would be common of a
+      whistle-blower or political dissident. Despite the strong credential,
+      the lack of identity proofing would make any transactions conducted by
+      the account to fall into a low LoA. Furthermore, different use cases and
+      domains require subtly different definitions for their LoA categories,
+      and one group&rsquo;s LoA2 is not equivalent or even comparable to
+      another group&rsquo;s LoA2. </t>
 
-      <t>At the other extreme there are systems that collapse all of the
-      attributes and aspects into a single scalar value that communicates, in
-      sum, how much a transaction can be trusted. The NIST special publication
-      <xref target="SP-800-63-2">800-63</xref> version 2 defines a linear
-      scale Level of Assurance (LoA) measure that combines multiple aspects
-      about an identity transaction into such a single measure. While this
-      definition was originally narrowly targeted for a specific set of
-      government use cases, the LoA scale appeared to be applicable with a
-      wide variety of authentication scenarios in different domains. This has
-      led to a proliferation of incompatible interpretations of the same scale
-      in different contexts, preventing interoperability between each LoA
-      definition in spite of their common measurement. LoA is artificially
-      limited due to the original goal of creating a single linear scale.
-      Since identity proofing strength increases linearly along with
-      credential strength in the LoA scale, this scale is too limited for
-      describing many valid and useful forms of an identity transaction that
-      do not fit the government's original model. For example, an anonymously
-      assigned hardware token can be used in cases where the real world
-      identity of the subject cannot be known for privacy reasons, but the
-      credential itself can be highly trusted. This is in contrast with a
-      government employee accessing a government system, where the identity of
-      the individual would need to be highly proofed and strongly credentialed
-      at the same time.</t>
+      <t>Attribute based access control (ABAC) systems used by RPs may need to
+      know details about a user&rsquo;s attributes, such as how recently the
+      attribute data was verified and by whom. Attribute metadata systems are
+      capable of expressing extremely fine-grained detail about the
+      transaction. However, this approach requires the IdP to collect, store,
+      and transmit all of this attribute data for the RP&rsquo;s consumption.
+      The RP must process this data, which may be prohibitive for trivial
+      security decisions. </t>
 
-      <t>The Vectors of Trust (VoT) effort seeks to find a balance between
-      these two extremes by creating a data model that combines attributes of
-      the user and aspects of the authentication context into several values
-      that can be communicated separately but in parallel with each other.
-      This approach is both coarser grained than the distributed attributes
-      model and finer grained than the single scalar model, with the hope that
-      it is a viable balance of expressibility and processability.
-      Importantly, these three levels of granularity can be mapped to each
-      other. The information of several attributes can be folded into a vector
-      component, while the vector itself can be folded into an assurance
-      category. As such, the vectors of trust seeks to complement, not
-      replace, these other identity and trust mechanisms in the larger
-      identity ecosystem while providing a single value for RPs to
-      process.</t>
+      <t>Vectors of Trust (VoT) seeks a balance between these two alternatives
+      by allowing expression of multiple aspects of an identity transaction
+      (including but not limited to identity proofing, credential strength,
+      credential management, and assertion strength), without requiring full
+      attribute metadata descriptions. This method of measurement gives more
+      actionable data and expressiveness than an LoA, but is still relatively
+      easy for the RP to process. It is anticipated that VoT can be used
+      alongside more detailed attribute metadata systems. The RP can use the
+      vector value for most basic decisions but be able to query the IdP for
+      additional attribute metadata where needed. Furthermore, it is
+      anticipated that some trust frameworks will provide a simple mapping
+      between certain sets of vector values to LoAs, for RPs that do not have
+      a need for the vector&rsquo;s more fine-grained detail. </t>
+
+      <t>This document defines a data model for these vectors and an
+      on-the-wire format for conveying them between parties, anchored in a
+      trust definition. Additionally, this document defines a general-purpose
+      component values and a mechanism for defining custom vector components
+      which can be used by systems that need something more specific. </t>
 
       <section title="Terminology">
         <t><list style="hanging">
@@ -232,11 +232,13 @@
       style="verb">0</spanx> as the lowest value. Categories which do not have
       a natural ordering, or which can have an ambiguous ordering, SHOULD use
       letters. Categories MAY use both letter style and number style value
-      indicators. For example, a category could define <spanx style="verb">0</spanx>
-      as a special "empty" value while using letters such as <spanx
-      style="verb">a</spanx>, <spanx style="verb">b</spanx>, <spanx
-      style="verb">c</spanx> for normal values can to differentiate between
-      these types of options.</t>
+      indicators simultaneously. For example, a category could define <spanx
+      style="verb">0</spanx> as a special "empty" value while using letters
+      such as <spanx style="verb">a</spanx>, <spanx style="verb">b</spanx>,
+      <spanx style="verb">c</spanx> for normal values can to differentiate
+      between these types of options. Another system could have a base
+      category with a numeric value with additonal details provided by letter
+      values.</t>
 
       <t>Regardless of the type of value indicator used, the values assigned
       to each component of a vector MUST NOT be assumed always to have
@@ -247,8 +249,8 @@
       style="verb">1</spanx> in a given transaction.</t>
 
       <t>Each component MAY be repeated with multiple different values within
-      a single vector. The same component and value MUST NOT be repeated
-      within a single vector.</t>
+      a single vector. The same component and value combination MUST NOT be
+      repeated within a single vector.</t>
 
       <section anchor="IdentityProofing" title="Identity Proofing">
         <t>The Identity Proofing dimension defines, overall, how strongly the
@@ -264,7 +266,7 @@
         or less stringent proofing can be applied to an individual. In such
         cases it is RECOMMENDED that a digit style value be used for this
         component and that only a single value be allowed to be communicated
-        in a transaction. </t>
+        in a transaction.</t>
       </section>
 
       <section anchor="Credential" title="Primary Credential Usage">
@@ -331,7 +333,8 @@
       by [[ this document URL ]].</t>
 
       <t>Extensions of this specification SHOULD define their own component
-      values as described in <xref target="extension"/>.</t>
+      values as described in <xref target="extension"/>. Where possible,
+      extensions MAY re-use specific values here. </t>
 
       <section title="Identity Proofing">
         <t>The identity proofing component of this vector definition
@@ -545,7 +548,8 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
    <xs:element name="Vector">
       <xs:annotation>
-         <xs:documentation>This represents a set of vector components.</xs:documentation>
+         <xs:documentation>This represents a set of 
+             vector components.</xs:documentation>
       </xs:annotation>
       <xs:simpleType>
          <xs:restriction base="xsd:token">
@@ -564,7 +568,8 @@
 
         <figure>
           <artwork><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<AuthenticationContextDeclaration xmlns="urn:oasis:names:tc:SAML:2.0:ac">
+<AuthenticationContextDeclaration 
+  xmlns="urn:oasis:names:tc:SAML:2.0:ac">
    <Extension>
       <vot:Vector>P1.Cc.Ac</vot:Vector>
    </Extension>
@@ -719,11 +724,13 @@
 
       <figure>
         <artwork><![CDATA[{
-    "iss": "https://idp.example.org/",
-    "trustmarks": {
-         "https://trustmark.example.org/": "https://trustmark.example.org/trustmark/idp.example.org",
-         "https://trust.example.net/": "https://trust.example.net/trustmark/idp.example.org"
-    }
+  "iss": "https://idp.example.org/",
+  "trustmarks": {
+    "https://trustmark.example.org/":
+      "https://trustmark.example.org/trustmark/idp.example.org",
+    "https://trust.example.net/": 
+      "https://trust.example.net/trustmark/idp.example.org"
+  }
 }]]></artwork>
       </figure>
     </section>
@@ -757,7 +764,7 @@
       style="verb">P1</spanx> value from one framework and a <spanx
       style="verb">P1</spanx> value from another framework could have very
       different interpretations depending on their contextual trustmark
-      documents. </t>
+      documents.</t>
 
       <t>Extensions to this specification SHOULD choose either a numerical
       ordering or a group category approach to component values as described
@@ -972,7 +979,8 @@
     </references>
 
     <references title="Informative References">
-      <reference anchor="SP-800-63-2">
+      <reference anchor="SP-800-63-2"
+                 target="https://dx.doi.org/10.6028/NIST.SP.800-63-2">
         <front>
           <title>Electronic Authentication Guideline</title>
 
@@ -1142,6 +1150,73 @@
         <format type="PDF"/>
       </reference>
 
+      <reference anchor="SP-800-63-3"
+                 target="https://doi.org/10.6028/NIST.SP.800-63-3">
+        <front>
+          <title>Electronic Authentication Guideline</title>
+
+          <author fullname="Paul A. Grassi">
+            <organization/>
+          </author>
+
+          <author fullname="Michael E. Garcia">
+            <organization/>
+
+            <address>
+              <postal>
+                <street/>
+
+                <city/>
+
+                <region/>
+
+                <code/>
+
+                <country/>
+              </postal>
+
+              <phone/>
+
+              <facsimile/>
+
+              <email/>
+
+              <uri/>
+            </address>
+          </author>
+
+          <author fullname="James L. Fenton">
+            <organization/>
+
+            <address>
+              <postal>
+                <street/>
+
+                <city/>
+
+                <region/>
+
+                <code/>
+
+                <country/>
+              </postal>
+
+              <phone/>
+
+              <facsimile/>
+
+              <email/>
+
+              <uri/>
+            </address>
+          </author>
+
+          <date month="June" year="2017"/>
+        </front>
+
+        <format type="PDF"/>
+      </reference>
+
       <reference anchor="BCP195"
                  target="http://www.rfc-editor.org/info/bcp195">
         <front>
@@ -1187,6 +1262,12 @@
     </references>
 
     <section title="Document History">
+      <t>-07</t>
+
+      <t><list style="symbols">
+          <t>Rewrote introduction to clarify focus of document.</t>
+        </list></t>
+
       <t>-06</t>
 
       <t><list style="symbols">
@@ -1194,6 +1275,13 @@
 
           <t>Made it so that every component category could be
           multi-valued.</t>
+
+          <t>Added reference to updated 800-63-3.</t>
+
+          <t>Fixed example text width.</t>
+
+          <t>Switched document back to standards-track from experimental now
+          that there are extensions in the wild.</t>
         </list></t>
 
       <t>-05</t>
