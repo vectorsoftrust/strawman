@@ -769,7 +769,7 @@
 
       <t>Extensions to this specification SHOULD choose either a numerical
       ordering or a group category approach to component values as described
-      in . Extensions to this specification MUST specify whether multiple
+      in <xref target="Components"/>. Extensions to this specification MUST specify whether multiple
       values are allowed for each category, and while any component category
       is generally allowed to have multiple distinct values, a specific
       definition of a set of values in an extension MAY limit a given
