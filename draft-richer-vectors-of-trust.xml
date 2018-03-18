@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-richer-vectors-of-trust-07"
+<rfc category="std" docName="draft-richer-vectors-of-trust-08"
      ipr="trust200902">
   <front>
     <title abbrev="vectors-of-trust">Vectors of Trust</title>
@@ -50,7 +50,7 @@
       </address>
     </author>
 
-    <date day="08" month="December" year="2017"/>
+    <date day="18" month="March" year="2018"/>
 
     <abstract>
       <t>This document defines a mechanism for describing and signaling
@@ -59,11 +59,12 @@
     </abstract>
 
     <note title="Requirements Language">
-      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
-      NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
-      "MAY", and "OPTIONAL" in this document are to be interpreted as
-      described in BCP 14 <xref target="RFC2119">RFC 2119</xref> <xref target="RFC8174">RFC 8174</xref> when, and only when, they
-      appear in all capitals, as shown here.</t>
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+      "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+      "OPTIONAL" in this document are to be interpreted as described in BCP 14
+      <xref target="RFC2119">RFC 2119</xref> <xref target="RFC8174">RFC
+      8174</xref> when, and only when, they appear in all capitals, as shown
+      here.</t>
     </note>
   </front>
 
@@ -75,7 +76,7 @@
       calculated locally based on a detailed set of attribute metadata. This
       document defines a method of conveying trust information that is more
       expressive than a single value but less complex than comprehensive
-      attribute metadata. </t>
+      attribute metadata.</t>
 
       <t>Prior to the <xref target="SP-800-63-3">third edition</xref>
       published in 2017, <xref target="SP-800-63-2">NIST Special Publication
@@ -85,26 +86,25 @@
       generally considered more trusted (across all measured categories) than
       an LoA2 transaction. The LoA for a given transaction is computed by the
       identity provider (IdP) and is consumed by a relying party (RP). Since
-      the trust measurement is a simple numeric value, it's trivial for
-      RPs to process and compare. However, since each LoA encompasses many
-      different aspects of a transaction, it can't express many
-      real-world situations. For instance, an anonymous user account might
-      have a very strong credential, such as would be common of a
-      whistle-blower or political dissident. Despite the strong credential,
-      the lack of identity proofing would make any transactions conducted by
-      the account to fall into a low LoA. Furthermore, different use cases and
-      domains require subtly different definitions for their LoA categories,
-      and one group's LoA2 is not equivalent or even comparable to
-      another group's LoA2. </t>
+      the trust measurement is a simple numeric value, it's trivial for RPs to
+      process and compare. However, since each LoA encompasses many different
+      aspects of a transaction, it can't express many real-world situations.
+      For instance, an anonymous user account might have a very strong
+      credential, such as would be common of a whistle-blower or political
+      dissident. Despite the strong credential, the lack of identity proofing
+      would make any transactions conducted by the account to fall into a low
+      LoA. Furthermore, different use cases and domains require subtly
+      different definitions for their LoA categories, and one group's LoA2 is
+      not equivalent or even comparable to another group's LoA2.</t>
 
       <t>Attribute based access control (ABAC) systems used by RPs may need to
       know details about a user's attributes, such as how recently the
       attribute data was verified and by whom. Attribute metadata systems are
       capable of expressing extremely fine-grained detail about the
       transaction. However, this approach requires the IdP to collect, store,
-      and transmit all of this attribute data for the RP's consumption.
-      The RP must process this data, which may be prohibitive for trivial
-      security decisions. </t>
+      and transmit all of this attribute data for the RP's consumption. The RP
+      must process this data, which may be prohibitive for trivial security
+      decisions.</t>
 
       <t>Vectors of Trust (VoT) seeks a balance between these two alternatives
       by allowing expression of multiple aspects of an identity transaction
@@ -113,18 +113,24 @@
       attribute metadata descriptions. This method of measurement gives more
       actionable data and expressiveness than an LoA, but is still relatively
       easy for the RP to process. It is anticipated that VoT can be used
-      alongside more detailed attribute metadata systems. The RP can use the
+      alongside more detailed attribute metadata systems as has that proposed
+      by <xref target="NISTIR-8112">NISITIR 8112</xref>. The RP can use the
       vector value for most basic decisions but be able to query the IdP for
       additional attribute metadata where needed. Furthermore, it is
       anticipated that some trust frameworks will provide a simple mapping
       between certain sets of vector values to LoAs, for RPs that do not have
-      a need for the vector's more fine-grained detail. </t>
+      a need for the vector's more fine-grained detail. In such systems, an RP
+      is given a choice of how much detail it needs in order to process a
+      given request.</t>
 
       <t>This document defines a data model for these vectors and an
       on-the-wire format for conveying them between parties, anchored in a
-      trust definition. Additionally, this document defines a general-purpose
-      component values and a mechanism for defining custom vector components
-      which can be used by systems that need something more specific. </t>
+      trust definition. This document also provides guidance for defining
+      values for use in conveying this information, including four component
+      categories and guidance on defining values within those categories.
+      Additionally, this document defines a general-purpose set of component
+      values in <xref target="default-components">an appendix</xref> for use
+      cases that do not need something more specific.</t>
 
       <section title="Terminology">
         <t><list style="hanging">
@@ -161,6 +167,9 @@
 
             <t hangText="Vector Component">One of several constituent parts
             that make up a vector.</t>
+
+            <t hangText="Vector Component Value">One of the values applied to
+            a vector component within a vector.</t>
           </list></t>
       </section>
 
@@ -214,8 +223,8 @@
       rules for each value in each component. Consequently, a particular
       vector value can only be compared with vectors defined in the same
       context. The RP MUST understand and take into account the trust
-      framework context in which a vector is being expressed in order for it
-      to be processed securely.</t>
+      framework context in which a vector is being expressed in order for to
+      process a vector securely.</t>
 
       <t>Each component is identified by a demarcator consisting of a single
       uppercase ASCII letter in the range <spanx style="verb">[A-Z]</spanx>.
@@ -323,115 +332,6 @@
         it is RECOMMENDED that a letter style value be used for this component
         and that multiple values be allowed to be communicated
         simultaneously.</t>
-      </section>
-    </section>
-
-    <section anchor="default-components"
-             title="Vectors of Trust Default Component Value Definitions">
-      <t>This specification defines the following general-purpose component
-      definitions, which MAY be used when a more specific set is unavailable.
-      These component values are referenced in a trustmark definition defined
-      by [[ this document URL ]].</t>
-
-      <t>Extensions of this specification SHOULD define their own component
-      values as described in <xref target="extension"/>. Where possible,
-      extensions MAY re-use specific values here. </t>
-
-      <section title="Identity Proofing">
-        <t>The identity proofing component of this vector definition
-        represents increasing scrutiny during the proofing process. Higher
-        levels are largely subsumptive of lower levels, such that <spanx
-        style="verb">P2</spanx> fulfills requirements for <spanx style="verb">P1</spanx>,
-        etc. Mutltiple distinct values from this category MUST NOT be used in
-        a single transaction.</t>
-
-        <t><list style="hanging">
-            <t hangText="P0">No proofing is done, data is not guaranteed to be
-            persistent across sessions</t>
-
-            <t hangText="P1">Attributes are self-asserted but consistent over
-            time, potentially pseudonymous</t>
-
-            <t hangText="P2">Identity has been proofed either in person or
-            remotely using trusted mechanisms (such as social proofing)</t>
-
-            <t hangText="P3">There is a binding relationship between the
-            identity provider and the identified party (such as
-            signed/notarized documents, employment records)</t>
-          </list></t>
-      </section>
-
-      <section title="Primary Credential Usage">
-        <t>The primary credential usage component of this vector definition
-        represents distinct categories of primary credential that MAY be used
-        together in a single transaction. Multiple distinct values from this
-        category MAY be used in a single transaction.</t>
-
-        <t><list style="hanging">
-            <t hangText="C0">No credential is used / anonymous public
-            service</t>
-
-            <t hangText="Ca">Simple session HTTP cookies (with nothing else)</t>
-
-            <t hangText="Cb">Known device</t>
-
-            <t hangText="Cc">Shared secret such as a username and password
-            combination</t>
-
-            <t hangText="Cd">Cryptographic proof of key possession using
-            shared key</t>
-
-            <t hangText="Ce">Cryptographic proof of key possession using
-            asymmetric key</t>
-
-            <t hangText="Cf">Sealed hardware token / trusted biometric /
-            TPM-backed keys</t>
-          </list></t>
-      </section>
-
-      <section title="Primary Credential Management">
-        <t>The primary credential management component of this vector
-        definition represents distinct categories of management that MAY be
-        considered separately or together in a single transaction. Many trust
-        framework deployments MAY use a single value for this component as a
-        baseline for all transactions and thereby omit it. Multiple distinct
-        values from this category MAY be used in a single transaction.</t>
-
-        <t><list style="hanging">
-            <t hangText="Ma">Self-asserted primary credentials (user chooses
-            their own credentials and must rotate or revoke them manually) /
-            no additional verification for primary credential issuance or
-            rotation</t>
-
-            <t hangText="Mb">Remote issuance and rotation / use of backup
-            recover credentials (such as email verification) / deletion on
-            user request</t>
-
-            <t hangText="Mc">Full proofing required for each issuance and
-            rotation / revocation on suspicious activity</t>
-          </list></t>
-      </section>
-
-      <section title="Assertion Presentation">
-        <t>The assertion presentation component of this vector definition
-        represents distinct categories of assertion which are RECOMMENDED to
-        be used in a subsumptive manner but MAY be used together. Multiple
-        distinct values from this category MAY be used in a single
-        transaction.</t>
-
-        <t><list style="hanging">
-            <t hangText="Aa">No protection / unsigned bearer identifier (such
-            as an HTTP session cookie in a web browser)</t>
-
-            <t hangText="Ab">Signed and verifiable assertion, passed through
-            the user agent (web browser)</t>
-
-            <t hangText="Ac">Signed and verifiable assertion, passed through a
-            back channel</t>
-
-            <t hangText="Ad">Assertion encrypted to the relying parties key
-            and audience protected</t>
-          </list></t>
       </section>
     </section>
 
@@ -598,8 +498,8 @@
         vectors are ORed together. For example, a list of vectors in the form
         <spanx style="verb">["P1.Cb.Cc.Ab", "Ce.Ab"]</spanx> is stating that
         either the full set of "P1 AND Cb AND Cc AND Ab" simultaneously OR the
-        set of "Ce AND Ab" simultaneously are acceptable to this RP for this
-        transaction.</t>
+        full set of "Ce AND Ab" simultaneously are acceptable to this RP for
+        this transaction.</t>
 
         <t>Vector request values MAY omit components, indicating that any
         value is acceptable for that component category, including omission of
@@ -769,11 +669,11 @@
 
       <t>Extensions to this specification SHOULD choose either a numerical
       ordering or a group category approach to component values as described
-      in <xref target="Components"/>. Extensions to this specification MUST specify whether multiple
-      values are allowed for each category, and while any component category
-      is generally allowed to have multiple distinct values, a specific
-      definition of a set of values in an extension MAY limit a given
-      component category to a single value per transaction.</t>
+      in <xref target="Components"/>. Extensions to this specification MUST
+      specify whether multiple values are allowed for each category, and while
+      any component category is generally allowed to have multiple distinct
+      values, a specific definition of a set of values in an extension MAY
+      limit a given component category to a single value per transaction.</t>
     </section>
 
     <section anchor="Acknowledgements" title="Acknowledgements">
@@ -921,6 +821,15 @@
       a signed identity assertion. A signed OpenID Connect ID Token and a
       signed SAML assertion both fulfil this requirement.</t>
 
+      <t>The vector value is always associated with a trustmark and needs to
+      be interpreted by the RP in the context of that trustmark. Different
+      trust frameworks can apply different interpretations to the same
+      component value, much as was the case with LoA. Therefore, an RP
+      interpreting a component value in the the wrong context could mistakenly
+      accept or reject a request. In order to avoid this mistake, RPs need to
+      reject vectors that are defined in trust frameworks that they do not
+      understand how to interpret properly.</t>
+
       <t>The VoT framework provides a mechanism for describing and conveying
       trust information. It does not define any policies for asserting the
       values of the vector, nor does it define any policies for applying the
@@ -954,7 +863,7 @@
 
       <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml'?>
 
-      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8259.xml'?> 
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8259.xml'?>
 
       <reference anchor="OpenID">
         <front>
@@ -988,12 +897,15 @@
           <title>Electronic Authentication Guideline</title>
 
           <author>
-            <organization>National Institute of Standards and Technology, U.S. Department of Commerce</organization>
+            <organization>National Institute of Standards and Technology, U.S.
+            Department of Commerce</organization>
           </author>
 
           <date month="August" year="2013"/>
         </front>
+
         <seriesInfo name="NIST" value="SP 800-63-2"/>
+
         <seriesInfo name="DOI" value="10.6028/NIST.SP.800-63-2"/>
       </reference>
 
@@ -1003,13 +915,32 @@
           <title>Digital Identity Guideline</title>
 
           <author>
-            <organization>National Institute of Standards and Technology, U.S. Department of Commerce</organization>
+            <organization>National Institute of Standards and Technology, U.S.
+            Department of Commerce</organization>
           </author>
 
           <date month="June" year="2017"/>
         </front>
+
         <seriesInfo name="NIST" value="SP 800-63-3"/>
+
         <seriesInfo name="DOI" value="10.6028/NIST.SP.800-63-3"/>
+      </reference>
+
+      <reference anchor="NISTIR-8112"
+                 target="https://pages.nist.gov/NISTIR-8112/NISTIR-8112.html">
+        <front>
+          <title>A Proposed Schema for Evaluating Federated Attributes</title>
+
+          <author>
+            <organization>National Institute of Standards and Technology, U.S.
+            Department of Commerce</organization>
+          </author>
+
+          <date month="January" year="2018"/>
+        </front>
+
+        <seriesInfo name="NIST" value="NISTIR 8112"/>
       </reference>
 
       <reference anchor="BCP195"
@@ -1056,7 +987,129 @@
       </reference>
     </references>
 
+    <section anchor="default-components"
+             title="Vectors of Trust Default Component Value Definitions">
+      <t>The following general-purpose component definitions MAY be used when
+      a more specific set is unavailable. These component values are
+      referenced in a trustmark definition defined by [[ this document URL
+      ]].</t>
+
+      <t>Extensions of this specification SHOULD define their own component
+      values as described in <xref target="extension"/>. Where possible,
+      extensions MAY re-use specific values here. </t>
+
+      <section title="Identity Proofing">
+        <t>The identity proofing component of this vector definition
+        represents increasing scrutiny during the proofing process. Higher
+        levels are largely subsumptive of lower levels, such that <spanx
+        style="verb">P2</spanx> fulfills requirements for <spanx style="verb">P1</spanx>,
+        etc. Mutltiple distinct values from this category MUST NOT be used in
+        a single transaction.</t>
+
+        <t><list style="hanging">
+            <t hangText="P0">No proofing is done, data is not guaranteed to be
+            persistent across sessions</t>
+
+            <t hangText="P1">Attributes are self-asserted but consistent over
+            time, potentially pseudonymous</t>
+
+            <t hangText="P2">Identity has been proofed either in person or
+            remotely using trusted mechanisms (such as social proofing)</t>
+
+            <t hangText="P3">There is a binding relationship between the
+            identity provider and the identified party (such as
+            signed/notarized documents, employment records)</t>
+          </list></t>
+      </section>
+
+      <section title="Primary Credential Usage">
+        <t>The primary credential usage component of this vector definition
+        represents distinct categories of primary credential that MAY be used
+        together in a single transaction. Multiple distinct values from this
+        category MAY be used in a single transaction.</t>
+
+        <t><list style="hanging">
+            <t hangText="C0">No credential is used / anonymous public
+            service</t>
+
+            <t hangText="Ca">Simple session HTTP cookies (with nothing
+            else)</t>
+
+            <t hangText="Cb">Known device</t>
+
+            <t hangText="Cc">Shared secret such as a username and password
+            combination</t>
+
+            <t hangText="Cd">Cryptographic proof of key possession using
+            shared key</t>
+
+            <t hangText="Ce">Cryptographic proof of key possession using
+            asymmetric key</t>
+
+            <t hangText="Cf">Sealed hardware token / trusted biometric /
+            TPM-backed keys</t>
+          </list></t>
+      </section>
+
+      <section title="Primary Credential Management">
+        <t>The primary credential management component of this vector
+        definition represents distinct categories of management that MAY be
+        considered separately or together in a single transaction. Many trust
+        framework deployments MAY use a single value for this component as a
+        baseline for all transactions and thereby omit it. Multiple distinct
+        values from this category MAY be used in a single transaction.</t>
+
+        <t><list style="hanging">
+            <t hangText="Ma">Self-asserted primary credentials (user chooses
+            their own credentials and must rotate or revoke them manually) /
+            no additional verification for primary credential issuance or
+            rotation</t>
+
+            <t hangText="Mb">Remote issuance and rotation / use of backup
+            recover credentials (such as email verification) / deletion on
+            user request</t>
+
+            <t hangText="Mc">Full proofing required for each issuance and
+            rotation / revocation on suspicious activity</t>
+          </list></t>
+      </section>
+
+      <section title="Assertion Presentation">
+        <t>The assertion presentation component of this vector definition
+        represents distinct categories of assertion which are RECOMMENDED to
+        be used in a subsumptive manner but MAY be used together. Multiple
+        distinct values from this category MAY be used in a single
+        transaction.</t>
+
+        <t><list style="hanging">
+            <t hangText="Aa">No protection / unsigned bearer identifier (such
+            as an HTTP session cookie in a web browser)</t>
+
+            <t hangText="Ab">Signed and verifiable assertion, passed through
+            the user agent (web browser)</t>
+
+            <t hangText="Ac">Signed and verifiable assertion, passed through a
+            back channel</t>
+
+            <t hangText="Ad">Assertion encrypted to the relying parties key
+            and audience protected</t>
+          </list></t>
+      </section>
+    </section>
+
     <section title="Document History">
+      <t>-08</t>
+
+      <t><list style="symbols">
+          <t>Incorporated shepherd comments. </t>
+
+          <t>Updated references.</t>
+
+          <t>Added reference to NISTIR 8112.</t>
+
+          <t>Moved default component definitions to appendix. </t>
+        </list></t>
+
       <t>-07</t>
 
       <t><list style="symbols">
