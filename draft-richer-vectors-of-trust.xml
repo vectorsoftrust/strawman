@@ -85,24 +85,24 @@
       generally considered more trusted (across all measured categories) than
       an LoA2 transaction. The LoA for a given transaction is computed by the
       identity provider (IdP) and is consumed by a relying party (RP). Since
-      the trust measurement is a simple numeric value, it&rsquo;s trivial for
+      the trust measurement is a simple numeric value, it's trivial for
       RPs to process and compare. However, since each LoA encompasses many
-      different aspects of a transaction, it can&rsquo;t express many
+      different aspects of a transaction, it can't express many
       real-world situations. For instance, an anonymous user account might
       have a very strong credential, such as would be common of a
       whistle-blower or political dissident. Despite the strong credential,
       the lack of identity proofing would make any transactions conducted by
       the account to fall into a low LoA. Furthermore, different use cases and
       domains require subtly different definitions for their LoA categories,
-      and one group&rsquo;s LoA2 is not equivalent or even comparable to
-      another group&rsquo;s LoA2. </t>
+      and one group's LoA2 is not equivalent or even comparable to
+      another group's LoA2. </t>
 
       <t>Attribute based access control (ABAC) systems used by RPs may need to
-      know details about a user&rsquo;s attributes, such as how recently the
+      know details about a user's attributes, such as how recently the
       attribute data was verified and by whom. Attribute metadata systems are
       capable of expressing extremely fine-grained detail about the
       transaction. However, this approach requires the IdP to collect, store,
-      and transmit all of this attribute data for the RP&rsquo;s consumption.
+      and transmit all of this attribute data for the RP's consumption.
       The RP must process this data, which may be prohibitive for trivial
       security decisions. </t>
 
@@ -118,7 +118,7 @@
       additional attribute metadata where needed. Furthermore, it is
       anticipated that some trust frameworks will provide a simple mapping
       between certain sets of vector values to LoAs, for RPs that do not have
-      a need for the vector&rsquo;s more fine-grained detail. </t>
+      a need for the vector's more fine-grained detail. </t>
 
       <t>This document defines a data model for these vectors and an
       on-the-wire format for conveying them between parties, anchored in a
