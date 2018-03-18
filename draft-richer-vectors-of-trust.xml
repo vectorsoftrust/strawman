@@ -646,8 +646,9 @@
       identity federation protocol. However, the exact nature of the
       information needed is reliant on the parties requiring the information
       and the relationship between them. While this document does define a
-      usable default set of values, it is anticipated that many situations
-      will require an extension of this specification for their own use.</t>
+      usable default set of values in <xref target="default-components"/>, it
+      is anticipated that many situations will require an extension of this
+      specification for their own use.</t>
 
       <t>Components categories such as those defined in <xref
       target="Components"/> are intended to be general purpose and reusable in
