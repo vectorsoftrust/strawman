@@ -262,7 +262,7 @@
       a single vector. The same component and value combination MUST NOT be
       repeated within a single vector.</t>
 
-      <section anchor="IdentityProofing" title="Identity Proofing">
+      <section anchor="IdentityProofing" title="Identity Proofing (P)">
         <t>The Identity Proofing dimension defines, overall, how strongly the
         set of identity attributes have been verified and vetted. In other
         words, this dimension describes how likely it is that a given digital
@@ -279,7 +279,7 @@
         in a transaction.</t>
       </section>
 
-      <section anchor="Credential" title="Primary Credential Usage">
+      <section anchor="Credential" title="Primary Credential Usage (C)">
         <t>The primary credential usage dimension defines how strongly the
         primary credential can be verified by the IdP. In other words, how
         easily that credential could be spoofed or stolen.</t>
@@ -295,7 +295,7 @@
         when Multi-Factor Authentication is used.</t>
       </section>
 
-      <section title="Primary Credential Management">
+      <section title="Primary Credential Management (M)">
         <t>The primary credential management dimension conveys information
         about the expected lifecycle of the primary credential in use,
         including its binding, rotation, and revocation. In other words, the
@@ -313,7 +313,8 @@
         values be allowed to be communicated simultaneously.</t>
       </section>
 
-      <section anchor="AssertionPresentation" title="Assertion Presentation">
+      <section anchor="AssertionPresentation"
+               title="Assertion Presentation (A)">
         <t>The Assertion Presentation dimension defines how well the given
         digital identity can be communicated across the network without
         information leaking to unintended parties, and without spoofing. In
@@ -360,6 +361,9 @@
 
           <t>The vector needs to be cryptographically bound to the assertion
           which it is describing.</t>
+
+          <t>The vector needs to be interpreted in the context of a specific
+          trust framework definition.</t>
         </list></t>
 
       <t>These requirements lead us to defining a simple string-based
@@ -669,11 +673,12 @@
 
       <t>Extensions to this specification SHOULD choose either a numerical
       ordering or a group category approach to component values as described
-      in <xref target="Components"/>. Extensions to this specification MUST
-      specify whether multiple values are allowed for each category, and while
-      any component category is generally allowed to have multiple distinct
-      values, a specific definition of a set of values in an extension MAY
-      limit a given component category to a single value per transaction.</t>
+      in <xref target="Components"/>, though combinations of both types MAY be
+      used. Extensions to this specification MUST specify whether multiple
+      values are allowed for each category, and while any component category
+      is generally allowed to have multiple distinct values, a specific
+      definition of a set of values in an extension MAY limit a given
+      component category to a single value per transaction.</t>
     </section>
 
     <section anchor="Acknowledgements" title="Acknowledgements">
