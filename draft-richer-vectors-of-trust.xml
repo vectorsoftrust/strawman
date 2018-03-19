@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-richer-vectors-of-trust-08"
+<rfc category="std" docName="draft-richer-vectors-of-trust-09"
      ipr="trust200902">
   <front>
     <title abbrev="vectors-of-trust">Vectors of Trust</title>
@@ -50,7 +50,7 @@
       </address>
     </author>
 
-    <date day="18" month="March" year="2018"/>
+    <date day="19" month="March" year="2018"/>
 
     <abstract>
       <t>This document defines a mechanism for describing and signaling
@@ -785,9 +785,12 @@
         Parameters Registry established by <xref target="RFC6749"/>.</t>
 
         <t><list style="symbols">
-            <t>Demarcator Symbol: vtr</t>
+            <t>Name: vtr</t>
 
             <t>Description: Vector of Trust request</t>
+
+            <t>Parmater usage location: authorization request, token
+            request</t>
 
             <t>Change Controller: IESG</t>
 
@@ -808,7 +811,30 @@
 
             <t>Document: [[ this document ]]</t>
           </list><list style="symbols">
-            <t>Demarcator Symbol: vtm</t>
+            <t>Claim name: vtm</t>
+
+            <t>Description: Vector of Trust trustmark</t>
+
+            <t>Change Controller: IESG</t>
+
+            <t>Document: [[ this document ]]</t>
+          </list></t>
+      </section>
+
+      <section title="Additions to OAuth Token Introspection Response">
+        <t>This specification adds the following values to the OAuth Token
+        Introspection Response established by <xref target="RFC7662"/>.</t>
+
+        <t><list style="symbols">
+            <t>Name: vot</t>
+
+            <t>Description: Vector of Trust value</t>
+
+            <t>Change Controller: IESG</t>
+
+            <t>Document: [[ this document ]]</t>
+          </list><list style="symbols">
+            <t>Name: vtm</t>
 
             <t>Description: Vector of Trust trustmark</t>
 
@@ -862,6 +888,8 @@
       <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml'?>
 
       <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7519.xml'?>
+
+      <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7662.xml'?>
 
       <?rfc include='http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6749.xml'?>
 
@@ -1002,7 +1030,7 @@
 
       <t>Extensions of this specification SHOULD define their own component
       values as described in <xref target="extension"/>. Where possible,
-      extensions MAY re-use specific values here. </t>
+      extensions MAY re-use specific values here.</t>
 
       <section title="Identity Proofing">
         <t>The identity proofing component of this vector definition
@@ -1104,16 +1132,24 @@
     </section>
 
     <section title="Document History">
+      <t>-09</t>
+
+      <t><list style="symbols">
+          <t>Added introspection response IANA registration.</t>
+
+          <t>Cleaned up IANA entries.</t>
+        </list></t>
+
       <t>-08</t>
 
       <t><list style="symbols">
-          <t>Incorporated shepherd comments. </t>
+          <t>Incorporated shepherd comments.</t>
 
           <t>Updated references.</t>
 
           <t>Added reference to NISTIR 8112.</t>
 
-          <t>Moved default component definitions to appendix. </t>
+          <t>Moved default component definitions to appendix.</t>
         </list></t>
 
       <t>-07</t>
