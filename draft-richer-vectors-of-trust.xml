@@ -50,12 +50,13 @@
       </address>
     </author>
 
-    <date day="19" month="March" year="2018"/>
+    <date day="9" month="May" year="2018"/>
 
     <abstract>
       <t>This document defines a mechanism for describing and signaling
-      several aspects that are used to calculate trust placed in a digital
-      identity transaction.</t>
+      several aspects of a digital identity transaction and its participants.
+      These aspects are used to determine the trust to be placed in that
+      transaction.</t>
     </abstract>
 
     <note title="Requirements Language">
@@ -120,8 +121,8 @@
       anticipated that some trust frameworks will provide a simple mapping
       between certain sets of vector values to LoAs, for RPs that do not have
       a need for the vector's more fine-grained detail. In such systems, an RP
-      is given a choice of how much detail it needs in order to process a
-      given request.</t>
+      is given a choice of how much detail to request from the IdP in order to
+      process a given transaction.</t>
 
       <t>This document defines a data model for these vectors and an
       on-the-wire format for conveying them between parties, anchored in a
@@ -134,13 +135,23 @@
 
       <section title="Terminology">
         <t><list style="hanging">
+            <t hangText="Identity Federation">A protocol in which an Identity
+            Provider (IdP) asserts a user's identity information to a relying
+            party (RP) through the use of a cryptographic assertion or other
+            verifiable mechanism, or a system implementing such a protocol.
+            Also referred to simply as "federation".</t>
+
             <t hangText="Identity Provider (IdP)">A system that manages
             identity information and is able to assert this information across
             the network through an identity API.</t>
 
             <t hangText="Identity Subject">The person (user) engaging in the
-            identity transaction, being identified by the identity provider
-            and identified to the relying party.</t>
+            identity transaction, being identified by the identity provider to
+            the relying party.</t>
+
+            <t hangText="Identity Proofing">The process of verifying and
+            validating that a set of identity attributes belongs to a
+            real-world identity subject.</t>
 
             <t hangText="Primary Credential">The means used by the identity
             subject to authenticate to the identity provider.</t>
@@ -156,17 +167,20 @@
             and legal clauses that defines how different parties in an
             identity transaction may act.</t>
 
-            <t hangText="Trustmark">A verifiable attestation that a party has
-            proved to follow the constraints of a trust framework.</t>
+            <t hangText="Trustmark">A URI referencing a specific Trust
+            Framework and its definition of vector components and vector
+            component values.</t>
 
-            <t hangText="Trustmark Provider">A system that issues and provides
-            verification for trustmarks.</t>
+            <t hangText="Trustmark Provider">A system that can verify that a
+            given system (such as an identity provider) is both capable of
+            asserting and allowed to assert the vector component values it is
+            claiming.</t>
 
             <t hangText="Vector">A multi-part data structure, used here for
             conveying information about an authentication transaction.</t>
 
             <t hangText="Vector Component">One of several constituent parts
-            that make up a vector.</t>
+            that make up a vector, indicating a category of information.</t>
 
             <t hangText="Vector Component Value">One of the values applied to
             a vector component within a vector.</t>
@@ -188,15 +202,15 @@
         binding between the credential and the real-world user is a
         representation of the identity proofing process performed by the
         identity provider (or an agent thereof) to verify the identity of the
-        real-world person. This is all carried by an identity assertion across
-        the network to the relying party during the authentication
-        transaction.</t>
+        real-world person. This information is carried across the network as
+        part of an identity assertion presented to the relying party during
+        the authentication transaction.</t>
       </section>
 
       <section anchor="Architecture" title="Component Architecture">
-        <t>The term Vectors of Trust is based on the mathematical construct of
-        a vector, which is defined as an item composed of multiple independent
-        values.</t>
+        <t>The term Vectors of Trust is inspired by the mathematical construct
+        of a vector, which is defined as an item composed of multiple
+        independent values.</t>
 
         <t>An important goal for this work is to balance the need for
         simplicity (particularly on the part of the relying party) with the
@@ -212,19 +226,19 @@
     <section anchor="Components" title="Component Definitions">
       <t>This specification defines four orthogonal components: identity
       proofing, primary credential usage, primary credential management, and
-      assertion presentation. These dimensions MUST be evaluated by the RP in
-      the context of a trust framework and SHOULD be combined with other
-      information when making a trust and authorization decision.</t>
+      assertion presentation.</t>
 
-      <t>This specification also defines values for each component to be used
-      in the absence of a more specific trust framework in <xref
+      <t>This specification also defines values for each of these component to
+      be used in the absence of a more specific trust framework in <xref
       target="default-components"/>. It is expected that trust frameworks will
       provide context, semantics, and mapping to legal statutes and business
-      rules for each value in each component. Consequently, a particular
-      vector value can only be compared with vectors defined in the same
-      context. The RP MUST understand and take into account the trust
-      framework context in which a vector is being expressed in order for to
-      process a vector securely.</t>
+      rules for each value in each component. </t>
+
+      <t>Consequently, a particular vector value can only be compared with
+      vectors defined in the context of a specific trust framework. The RP
+      MUST understand and take into account the trust framework context in
+      which a vector is being expressed in order for to process a vector
+      securely.</t>
 
       <t>Each component is identified by a demarcator consisting of a single
       uppercase ASCII letter in the range <spanx style="verb">[A-Z]</spanx>.
@@ -245,10 +259,15 @@
       indicators simultaneously. For example, a category could define <spanx
       style="verb">0</spanx> as a special "empty" value while using letters
       such as <spanx style="verb">a</spanx>, <spanx style="verb">b</spanx>,
-      <spanx style="verb">c</spanx> for normal values can to differentiate
-      between these types of options. Another system could have a base
-      category with a numeric value with additonal details provided by letter
-      values.</t>
+      <spanx style="verb">c</spanx> for normal values to differentiate between
+      these types of options. Another system could have a base category with a
+      numeric value with additonal details provided by letter values. </t>
+
+      <t>Each component MAY be repeated with multiple different values within
+      a single vector (see <xref target="Serialization"/> for details). The
+      same component and value combination MUST NOT be repeated within a
+      single vector. A trust framework MAY define additional restructions on
+      combinations of values.</t>
 
       <t>Regardless of the type of value indicator used, the values assigned
       to each component of a vector MUST NOT be assumed always to have
@@ -256,25 +275,23 @@
       components in the vector space. In other words, <spanx style="verb">1</spanx>
       is different from <spanx style="verb">2</spanx>, but it is dangerous to
       assume that <spanx style="verb">2</spanx> is always better than <spanx
-      style="verb">1</spanx> in a given transaction.</t>
-
-      <t>Each component MAY be repeated with multiple different values within
-      a single vector. The same component and value combination MUST NOT be
-      repeated within a single vector.</t>
+      style="verb">1.</spanx></t>
 
       <section anchor="IdentityProofing" title="Identity Proofing (P)">
         <t>The Identity Proofing dimension defines, overall, how strongly the
         set of identity attributes have been verified and vetted. In other
         words, this dimension describes how likely it is that a given digital
         identity transaction corresponds to a particular (real-world) identity
-        subject.</t>
+        subject. For example, did the user have to provide documentation to a
+        trusted party to prove their legal name and address, or were they able
+        to self-assert such values?</t>
 
-        <t>This dimension SHALL be represented by the <spanx style="verb">P</spanx>
-        demarcator and a single-character level value, such as <spanx
-        style="verb">P0</spanx>, <spanx style="verb">P1</spanx>, etc. Most
-        definitions of identity proofing will have a natural ordering, as more
-        or less stringent proofing can be applied to an individual. In such
-        cases it is RECOMMENDED that a digit style value be used for this
+        <t>This dimension uses the <spanx style="verb">P</spanx> demarcator
+        and a single-character level value, such as <spanx style="verb">P0</spanx>,
+        <spanx style="verb">P1</spanx>, etc. Most definitions of identity
+        proofing will have a natural ordering, as more or less stringent
+        proofing can be applied to an individual being granted an account. In
+        such cases it is RECOMMENDED that a digit style value be used for this
         component and that only a single value be allowed to be communicated
         in a transaction.</t>
       </section>
@@ -282,17 +299,19 @@
       <section anchor="Credential" title="Primary Credential Usage (C)">
         <t>The primary credential usage dimension defines how strongly the
         primary credential can be verified by the IdP. In other words, how
-        easily that credential could be spoofed or stolen.</t>
+        easily that credential could be spoofed or stolen. For example, did
+        the user log in using a password, with a biometric, with a
+        cryptographic hardware device, or some combination of the above?</t>
 
-        <t>This dimension SHALL be represented by the <spanx style="verb">C</spanx>
-        demarcator and a single-character level value, such as <spanx
-        style="verb">Ca</spanx>, <spanx style="verb">Cb</spanx>, etc. Most
-        definitions of credential usage will not have an overall natural
-        ordering, as there may be several equivalent classes described within
-        a trust framework. In such cases it is RECOMMENDED that a letter style
-        value be used for this component and that multiple distinct credential
-        usage factors be allowed to be communicated simultaneously, such as
-        when Multi-Factor Authentication is used.</t>
+        <t>This dimension uses the <spanx style="verb">C</spanx> demarcator
+        and a single-character level value, such as <spanx style="verb">Ca</spanx>,
+        <spanx style="verb">Cb</spanx>, etc. Most definitions of credential
+        usage will not have an overall natural ordering, as there may be
+        several equivalent classes described within a trust framework. In such
+        cases it is RECOMMENDED that a letter style value be used for this
+        component and that multiple distinct credential usage factors be
+        allowed to be communicated simultaneously, such as when Multi-Factor
+        Authentication is used.</t>
       </section>
 
       <section title="Primary Credential Management (M)">
@@ -301,16 +320,17 @@
         including its binding, rotation, and revocation. In other words, the
         use and strength of policies, practices, and security controls used in
         managing the credential at the IdP and its binding to the intended
-        individual.</t>
+        individual. For example, can the user bring their own cryptographic
+        device or is one provided by the IdP?</t>
 
-        <t>This dimension SHALL be represented by the <spanx style="verb">M</spanx>
-        demarcator and a single-character level value, such as <spanx
-        style="verb">Ma</spanx>, <spanx style="verb">Mb</spanx>, etc. Most
-        definitions of credential management will not have an overall natural
-        ordering, though there can be preference and comparison between values
-        in some circumstances. In such cases it is RECOMMENDED that a letter
-        style value be used for this component and that multiple distinct
-        values be allowed to be communicated simultaneously.</t>
+        <t>This dimension uses the <spanx style="verb">M</spanx> demarcator
+        and a single-character level value, such as <spanx style="verb">Ma</spanx>,
+        <spanx style="verb">Mb</spanx>, etc. Most definitions of credential
+        management will not have an overall natural ordering, though there can
+        be preference and comparison between values in some circumstances. In
+        such cases it is RECOMMENDED that a letter style value be used for
+        this component and that multiple distinct values be allowed to be
+        communicated simultaneously.</t>
       </section>
 
       <section anchor="AssertionPresentation"
@@ -326,9 +346,9 @@
         target="RequestingVector">requests a login</xref> and when describing
         the <xref target="discovery">capabilities of an IdP</xref>.</t>
 
-        <t>This dimension SHALL be represented by the <spanx style="verb">A</spanx>
-        demarcator and a level value, such as <spanx style="verb">Aa</spanx>,
-        <spanx style="verb">Ab</spanx>, etc. Most definitions of assertion
+        <t>This dimension uses the <spanx style="verb">A</spanx> demarcator
+        and a level value, such as <spanx style="verb">Aa</spanx>, <spanx
+        style="verb">Ab</spanx>, etc. Most definitions of assertion
         presentation will not have an overall natural ordering. In such cases,
         it is RECOMMENDED that a letter style value be used for this component
         and that multiple values be allowed to be communicated
@@ -363,7 +383,7 @@
           which it is describing.</t>
 
           <t>The vector needs to be interpreted in the context of a specific
-          trust framework definition.</t>
+          trust framework definition identified by a trustmark URI.</t>
         </list></t>
 
       <t>These requirements lead us to defining a simple string-based
@@ -372,40 +392,51 @@
 
       <section anchor="Serialization" title="On the Wire Representation">
         <t>The vector MUST be represented as a period-separated ('.') list of
-        vector components, with no specific order. A vector component type MAY
-        occur multiple times within a single vector, with each component
-        separated by periods. Multiple values for a component are considered a
-        logical AND of the values. A specific value of a vector component MUST
-        NOT occur more than once in a single vector. That is, while <spanx
+        vector components. A vector component type can occur multiple times
+        within a single vector, but a specific value of a vector component can
+        not occur more than once in a single vector. That is, while <spanx
         style="verb">Cc.Cd</spanx> is a valid vector, <spanx style="verb">Cc.Cc</spanx>
-        is not.</t>
+        is not. Multiple values for a component are considered a logical AND
+        of the values. </t>
 
-        <t>Vector components MAY be omitted from a vector. No holding space is
-        left for an omitted vector component. If a vector component is
-        omitted, the vector is making no claim for that component. This MAY be
-        distinct from a specific component value stating that a component was
-        not used.</t>
+        <t>Vector component values MAY appear in any order within a vector,
+        and different orderings of the same vector values MUST be considered
+        equivalent. For example, <spanx style="verb">P1.Cc.Cd.Aa</spanx>,
+        <spanx style="verb">Aa.Cc.Cd.P1</spanx>, <spanx style="verb">Cd.P1.Cc.Aa</spanx>,
+        and <spanx style="verb">Aa.P1.Cd.Cc</spanx> are all considered the
+        same vector value.</t>
 
-        <t>Vector values MUST be communicated along side of a trustmark
-        definition to give the components context. The trustmark MUST be
-        cryptographically bound to the vector value, such as in a signed
-        assertion. A vector value without context is unprocessable, and
-        vectors defined in different contexts are not directly comparable as
-        whole values. Different trustmarks MAY re-use component definitions
-        (including their values), allowing comparison of individual components
-        across contexts without requiring complete understanding of all
-        aspects of a context. The proper processing of such cross-context
-        values is outside the scope of this specification.</t>
+        <t>Possible vector components MAY be omitted from a vector. No holding
+        space is left for an omitted vector component. If a vector component
+        is omitted, the vector is making no claim for that component. Trust
+        frameworks MAY define a distinct value for a component category to
+        indicate that a category was not used at all. </t>
+
+        <t>Vector values MUST be communicated along with of a <xref
+        target="Trustmark">trustmark URI</xref> to give the components and
+        component values context. The trustmark MUST be cryptographically
+        bound to the vector value, such as the two values being carried
+        together in a signed assertion. A vector value without context is
+        unprocessable, and vectors defined in different contexts are not
+        directly comparable as whole values. Different trust frameworks MAY
+        re-use component definitions (including their values), but processing
+        of such cross-context values is outside the scope of this
+        specification.</t>
 
         <t>For example, the vector value <spanx style="verb">P1.Cc.Ab</spanx>
         translates to "pseudonymous, proof of shared key, signed
         browser-passed verified assertion, and no claim made toward credential
         management" in the context of this specification's <xref
-        target="default-components">definitions</xref>. The vector value of
-        <spanx style="verb">Cb.Mc.Cd.Ac</spanx> translates to "known device,
-        full proofing require for issuance and rotation, cryptographic proof
-        of possession of a shared key, signed back-channel verified assertion,
-        and no claim made toward identity proofing" in the same context.</t>
+        target="default-components">definitions</xref>. A different vector
+        value of <spanx style="verb">Cb.Mc.Cd.Ac</spanx> translates to "known
+        device, full proofing required for credential issuance and rotation,
+        cryptographic proof of possession of a shared key, signed back-channel
+        verified assertion, and no claim made toward identity proofing" in the
+        same context. Since no claim is made here for identity proofing, no
+        specific value can be assumed by the RP. Note that this doesn't mean
+        the user wasn't proofed at all: it's possible that the user was fully
+        proofed to the highest capabilities within the trust framework, but
+        here the IdP is making no statement to that to the RP.</t>
       </section>
 
       <section anchor="OIDC" title="In OpenID Connect">
@@ -413,20 +444,25 @@
         the vector as a string within the <spanx style="verb">vot</spanx>
         (vector of trust) claim in the ID token. The <xref
         target="Trustmark">trustmark</xref> that applies to this vector MUST
-        be sent as an HTTPS URL in the <spanx style="verb">vtm</spanx> (vector
-        trust mark) claim to provide context to the vector.</t>
+        be sent as an URI in the <spanx style="verb">vtm</spanx> (vector trust
+        mark) claim to provide context to the vector.</t>
 
-        <t>For example, the body of an ID token claiming "pseudonymous, proof
-        of shared key, signed back-channel verified token, and no claim made
-        toward credential management" could look like this JSON object payload
-        of the ID token.</t>
+        <t>The <spanx style="verb">vot</spanx> and <spanx style="verb">vtm</spanx>
+        claims are interpreted by the RP to apply to the entire identity
+        transaction, and not necessarily to any one attribute specifically.
+        </t>
+
+        <t>For example, assume that for the given trustmark, the body of an ID
+        token claiming "pseudonymous, proof of shared key, signed back-channel
+        verified token, and no claim made toward credential management" could
+        look like this JSON object payload of the ID token.</t>
 
         <figure>
           <artwork><![CDATA[{ 
     "iss": "https://idp.example.com/", 
     "sub": "jondoe1234", 
     "vot": "P1.Cc.Ac",
-    "vtm": "https://trustmark.example.org/trustmark/idp.example.com"
+    "vtm": "https://example.org/vot-trust-framework"
 }]]></artwork>
         </figure>
 
@@ -486,24 +522,28 @@
 
     <section anchor="RequestingVector" title="Requesting Vector Values">
       <t>In some identity protocols, the RP can request that particular vector
-      components be applied to a given identity transaction. Using the same
-      syntax as defined in <xref target="Serialization"/>, an RP can indicate
-      that it desires particular aspects be present in the authentication.
-      Processing and fulfillment of these requests are in the purview of the
-      IdP and details are outside the scope of this specification.</t>
+      component values be used for a given identity transaction. Using the
+      same syntax as defined in <xref target="Serialization"/>, an RP can
+      indicate that it desires particular aspects be present in the
+      authentication. Processing and fulfillment of these requests are in the
+      purview of the IdP and details are outside the scope of this
+      specification.</t>
+
+      <t>Future specifications MAY define alternative ways for an RP to reqest
+      vector component values from an IdP.</t>
 
       <section anchor="RequestingOIDC" title="In OpenID Connect">
         <t>In <xref target="OpenID">OpenID Connect</xref>, the client MAY
-        request a set of acceptable VoT values with the <spanx style="verb">vtr</spanx>
-        (vector of trust request) claim request as part of the Request Object.
-        The value of this field is an array of JSON strings, each string
-        identifying an acceptable set of vector components. The component
-        values within each vector are ANDed together while the separate
-        vectors are ORed together. For example, a list of vectors in the form
-        <spanx style="verb">["P1.Cb.Cc.Ab", "Ce.Ab"]</spanx> is stating that
-        either the full set of "P1 AND Cb AND Cc AND Ab" simultaneously OR the
-        full set of "Ce AND Ab" simultaneously are acceptable to this RP for
-        this transaction.</t>
+        request a partial set of acceptable VoT component values with the
+        <spanx style="verb">vtr</spanx> (vector of trust request) claim
+        request as part of the Request Object. The value of this field is an
+        array of JSON strings, each string identifying an acceptable set of
+        vector components. The component values within each vector are ANDed
+        together while the separate vectors are ORed together. For example, a
+        list of vectors in the form <spanx style="verb">["P1.Cb.Cc.Ab", "Ce.Ab"]</spanx>
+        is stating that either the full set of "P1 AND Cb AND Cc AND Ab"
+        simultaneously OR the full set of "Ce AND Ab" simultaneously are
+        acceptable to this RP for this transaction.</t>
 
         <t>Vector request values MAY omit components, indicating that any
         value is acceptable for that component category, including omission of
@@ -519,125 +559,29 @@
         acceptable VoT values by including the corresponding <spanx
         style="verb">AuthenticationContextDeclRef</spanx> URIs together with
         an <spanx style="verb">AuthenticationContextClassRef</spanx>
-        corresponding to the trust mark (cf below). The processing rules in
-        <xref target="SAML"/> apply.</t>
+        corresponding to the <xref target="trustmark">trustmark</xref>. The
+        processing rules in <xref target="SAML"/> apply.</t>
       </section>
     </section>
 
-    <section anchor="Trustmark" title="Trustmark">
-      <t>When an RP receives a specific vector from an IdP, it needs to make a
-      decision to trust the vector within a specific context. A trust
-      framework can provide such a context, allowing legal and business rules
-      to give weight to an IdP's claims. A trustmark is a verifiable claim to
-      conform to a specific component of a trust framework, such as a verified
-      identity provider. The trustmark conveys the root of trustworthiness
-      about the claims and assertions made by the IdP, including the vector
-      itself.</t>
+    <section anchor="trustmark" title="Trustmarks">
+      <t>A trustmark is a URI that references a specific set of vector values
+      as defined by a trust framework. This URI MUST point to a human-readable
+      document that describes what components and values are valid, how they
+      are used together, and what practices the component values represent
+      within the trust framework. The contents of the trustmark URI MUST be
+      reachable by the operators or implementors of the RP. The URI SHOULD be
+      stable over time for a given trust framework.</t>
 
-      <t>The trustmark MUST be available from an HTTPS URL served by the trust
-      framework provider. The contents of this URL are a <xref
-      target="RFC8259">JSON</xref> document with the following fields:</t>
+      <t>For example, [[this document URI]] is used as a trustmark to
+      reference the values defined in <xref target="default-components"/>.
+      </t>
 
-      <t><list style="hanging">
-          <t hangText="idp">The issuer URL of the identity provider that this
-          trustmark pertains to. This MUST match the corresponding issuer
-          claim in the identity token, such as the OpenID Connect <spanx
-          style="verb">iss</spanx> field. This MUST be an HTTPS URL.</t>
-
-          <t hangText="trustmark_provider">The issuer URL of the trustmark
-          provider that issues this trustmark. The URL that a trustmark is
-          fetched from MUST start with the <spanx style="verb">iss</spanx> URL
-          in this field. This MUST be an HTTPS URL.</t>
-        </list></t>
-
-      <t>Vector component values offered by this IdP are be listed in a using
-      their demarcator. For the four component categories defined in this
-      specification:</t>
-
-      <t><list style="hanging">
-          <t hangText="P">Array of strings containing identity proofing values
-          for which the identity provider has been assessed and approved.</t>
-
-          <t hangText="C">Array of strings containing primary credential usage
-          values for which the identity provider has been assessed and
-          approved.</t>
-
-          <t hangText="M">Array of strings containing primary credential
-          management values for which the identity provider has been assessed
-          and approved.</t>
-
-          <t hangText="A">Array of strings containing assertion strength
-          values for which the identity provider has been assessed and
-          approved.</t>
-        </list></t>
-
-      <t>For example, the following trustmark provided by the
-      trustmark.example.org organization applies to the idp.example.org
-      identity provider:</t>
-
-      <figure>
-        <artwork><![CDATA[{
-  "idp": "https://idp.example.org/",
-  "trustmark_provider": "https://trustmark.example.org/",
-  "P": ["P0", "P1"],
-  "C": ["C0", "Ca", "Cb"],
-  "M": ["Mb"],
-  "A": ["Ab", "Ac"]
-}]]></artwork>
-      </figure>
-
-      <t>An RP wishing to check the claims made by an IdP can fetch the
-      information from the trustmark provider about what claims the IdP is
-      allowed to make in the first place and process them accordingly. The RP
-      MAY cache the information returned from the trustmark URL.</t>
-
-      <t>The operational aspects of the IdP MAY be included in the trustmark
-      definition. For example, if a trustmark can indicate that an IdP uses
-      multiple redundant hosts, encrypts all data at rest, or other
-      operational security mechanisms that affect the trustworthiness of
-      assertions made by the IdP. The definition of these additional aspects
-      is outside the scope of this specfication.</t>
-
-      <t>The means by which the RP decides which trustmark providers it trusts
-      is out of scope for this specification and is generally configured out
-      of band.</t>
-
-      <t>Though most trust frameworks will provide a third-party independent
-      verification service for components, an IdP MAY host its own trustmark.
-      For example, a self-hosted trustmark would look like:</t>
-
-      <figure>
-        <artwork><![CDATA[{
-  "idp": "https://idp.example.org/",
-  "trustmark_provider": "https://idp.example.org/",
-  "P": ["P0", "P1"],
-  "C": ["C0", "Ca", "Cb"],
-  "M": ["Mb"],
-  "A": ["Ab", "Ac"]
-}]]></artwork>
-      </figure>
-    </section>
-
-    <section anchor="discovery" title="Discovery">
-      <t>The IdP MAY list all of its available trustmarks as part of its
-      discovery document, such as the OpenID Connect Discovery server
-      configuration document. In this context, trustmarks are listed in the
-      <spanx style="verb">trustmarks</spanx> element which contains a single
-      <xref target="RFC8259">JSON</xref> object. The keys of this JSON object
-      are trustmark provider issuer URLs and the values of this object are the
-      corresponding trustmark URLs for this IdP.</t>
-
-      <figure>
-        <artwork><![CDATA[{
-  "iss": "https://idp.example.org/",
-  "trustmarks": {
-    "https://trustmark.example.org/":
-      "https://trustmark.example.org/trustmark/idp.example.org",
-    "https://trust.example.net/": 
-      "https://trust.example.net/trustmark/idp.example.org"
-  }
-}]]></artwork>
-      </figure>
+      <t>The process of a trustmark provider determining the ability of a
+      particular IdP to correctly assert values from a given trust framework
+      is outside the scope of this specification. Determining how an RP should
+      apply the values of a given vector to the RP's processing is outside the
+      scope of this specification.</t>
     </section>
 
     <section anchor="extension" title="Defining New Vector Values">
@@ -650,7 +594,7 @@
       is anticipated that many situations will require an extension of this
       specification for their own use.</t>
 
-      <t>Components categories such as those defined in <xref
+      <t>Component categories such as those defined in <xref
       target="Components"/> are intended to be general purpose and reusable in
       a variety of circumstances. Extension specifications SHOULD re-use
       existing category definitions where possible. Extensions MAY create
@@ -664,29 +608,35 @@
       target="default-components"/> are intended to be contextual to the
       defining trust document. While this specification's component values are
       intended to be general-purpose and extensions MAY re-use the values and
-      their definitions, extensions MUST define all allowable values. As these
-      values are always interpreted in the context of a trustmark, these
+      their definitions, implementations MUST define all allowable values. As
+      these values are always interpreted in the context of a trustmark, these
       values are not recorded in a central registry. Consequently, a <spanx
       style="verb">P1</spanx> value from one framework and a <spanx
       style="verb">P1</spanx> value from another framework could have very
-      different interpretations depending on their contextual trustmark
+      different interpretations depending on their contextual trust framework
       documents.</t>
 
-      <t>Extensions to this specification SHOULD choose either a numerical
-      ordering or a group category approach to component values as described
-      in <xref target="Components"/>, though combinations of both types MAY be
-      used. Extensions to this specification MUST specify whether multiple
-      values are allowed for each category, and while any component category
-      is generally allowed to have multiple distinct values, a specific
-      definition of a set of values in an extension MAY limit a given
-      component category to a single value per transaction.</t>
+      <t>Implementations of this specification SHOULD choose either a
+      numerical ordering or a group category approach to component values as
+      described in <xref target="Components"/>, though combinations of both
+      types MAY be used. Implementations of this specification MUST specify
+      whether multiple values are allowed for each category, and while any
+      component category is generally allowed to have multiple distinct
+      values, a specific definition of a set of values in an extension MAY
+      limit a given component category to a single value per transaction.</t>
+
+      <t>Extensions and implementations of this specification MUST be
+      referenced by a unique <xref target="trustmark">trustmark URI</xref> to
+      allow RPs to differentiate between different trust frameworks.</t>
     </section>
 
     <section anchor="Acknowledgements" title="Acknowledgements">
       <t>The authors would like to thank the members of the Vectors of Trust
       mailing list in the IETF for discussion and feedback on the concept and
       document, and the members of the ISOC Trust and Identity team for their
-      support.</t>
+      support. In particular, the authors would like to thank Paul Grassi, Jim
+      Fenton, Sarah Squire, Benjamin Kaduk, John Bradley, and Karen
+      O'Donoghue.</t>
     </section>
 
     <section anchor="IANA" title="IANA Considerations">
@@ -698,9 +648,7 @@
         Registry.</t>
 
         <t>Component demarcators are registered by <xref
-        target="RFC8126">Specification Required</xref> after a two-week review
-        period on the vot@ietf.org mailing list, on the advice of one or more
-        Designated Experts.</t>
+        target="RFC8126">Specification Required</xref>.</t>
 
         <t>Criteria that should be applied by the Designated Experts includes
         determining whether the proposed registration duplicates existing
@@ -708,15 +656,17 @@
         whether it is useful only for a single application, and whether the
         registration description is clear.</t>
 
-        <t>Registration requests sent to the mailing list for review should
-        use an appropriate subject (e.g., "Request to register Vector of Trust
-        Component name: example"). Within the review period, the Designated
-        Expert(s) will either approve or deny the registration request,
-        communicating this decision to the review list and IANA. Denials
-        should include an explanation and, if applicable, suggestions as to
-        how to make the request successful. IANA must only accept registry
-        updates from the Designated Expert(s) and should direct all requests
-        for registration to the review mailing list.</t>
+        <t>Registration requests sent to the vot@ietf.org mailing list for
+        review should use an appropriate subject (e.g., "Request to register
+        Vector of Trust Component name: example"). The Designated Expert(s)
+        will provide review within a two-week period and either approve or
+        deny the registration request, communicating this decision to the
+        review list and IANA. Denials should include an explanation and, if
+        applicable, suggestions as to how to make the request successful. IANA
+        must only accept registry updates from the Designated Expert(s) and
+        should direct all requests for registration to the vot@ietf.org
+        mailing list. If the Designated Experts do not respond within the
+        designated period, IANA should contact the IESG for guidance.</t>
 
         <section anchor="ComponentTemplate" title="Registration Template">
           <t><list style="hanging">
@@ -727,16 +677,15 @@
               <t hangText="Description:"><vspace/> Brief description of the
               component (e.g., "Example description").</t>
 
-              <t hangText="Change controller:"><vspace/> For Standards Track
-              RFCs, state "IESG". For other documents, give the name of the
-              responsible party. Other details (e.g., postal address, email
-              address, home page URI) may also be included.</t>
+              <t hangText="Change controller:"><vspace/> For IETF-stream RFCs,
+              state "IESG". For other documents, give the name of the
+              responsible party.</t>
 
               <t hangText="Specification document(s):"><vspace/> Reference to
-              the document(s) that specify the token endpoint authorization
-              method, preferably including a URI that can be used to retrieve
-              a copy of the document(s). An indication of the relevant
-              sections may also be included but is not required.</t>
+              the document(s) that specify the vector component, preferably
+              including a URI that can be used to retrieve a copy of the
+              document(s). An indication of the relevant sections may also be
+              included but is not required.</t>
             </list></t>
         </section>
 
@@ -813,7 +762,7 @@
           </list><list style="symbols">
             <t>Claim name: vtm</t>
 
-            <t>Description: Vector of Trust trustmark</t>
+            <t>Description: Vector of Trust trustmark URI</t>
 
             <t>Change Controller: IESG</t>
 
@@ -836,7 +785,7 @@
           </list><list style="symbols">
             <t>Name: vtm</t>
 
-            <t>Description: Vector of Trust trustmark</t>
+            <t>Description: Vector of Trust trustmark URI</t>
 
             <t>Change Controller: IESG</t>
 
@@ -846,28 +795,30 @@
     </section>
 
     <section anchor="Security" title="Security Considerations">
-      <t>The vector of trust value MUST be cryptographically protected in
-      transit, using TLS as described in <xref target="BCP195"/>. The vector
-      of trust value must be associated with a trustmark marker, and the two
-      must be carried together in a cryptographically bound mechanism such as
-      a signed identity assertion. A signed OpenID Connect ID Token and a
+      <t>The vector of trust value needs to be cryptographically protected in
+      transit between parties, such as by using TLS as described in <xref
+      target="BCP195"/>. The vector of trust value must be associated with a
+      trustmark by the RP processing the vector. By carrying both the vector
+      value and the trustmark URI, a signed OpenID Connect ID Token and a
       signed SAML assertion both fulfil this requirement.</t>
 
       <t>The vector value is always associated with a trustmark and needs to
-      be interpreted by the RP in the context of that trustmark. Different
-      trust frameworks can apply different interpretations to the same
-      component value, much as was the case with LoA. Therefore, an RP
-      interpreting a component value in the the wrong context could mistakenly
-      accept or reject a request. In order to avoid this mistake, RPs need to
-      reject vectors that are defined in trust frameworks that they do not
-      understand how to interpret properly.</t>
+      be interpreted by the RP in the context of the trust framework defined
+      by that trustmark. Different trust frameworks can apply different
+      interpretations to the same component value, much as was the case with
+      LoA. Therefore, an RP interpreting a component value in the the wrong
+      context could mistakenly accept or reject a request. In order to avoid
+      this mistake, RPs need to reject vectors that are defined in trust
+      frameworks that they do not understand how to interpret properly.</t>
 
       <t>The VoT framework provides a mechanism for describing and conveying
-      trust information. It does not define any policies for asserting the
-      values of the vector, nor does it define any policies for applying the
-      values of a vector to an RP's security decision process. These policies
-      must be agreed upon by the IdP and RP, and they should be expressed in
-      detail in an associated human-readable trust framework document.</t>
+      trust information. It does not define any policies for an IdP
+      determining which vector component values apply to a given transaction,
+      nor does it define any policies for applying the values of a vector to
+      an RP's security decision process. These policies and associated
+      practices are to be agreed upon by the IdP and RP, and they should be
+      expressed in detail in an associated human-readable trust framework
+      document vailable at the trustmark URI.</t>
     </section>
 
     <section anchor="Privacy" title="Privacy Considerations">
@@ -878,8 +829,8 @@
       absence of specific attributes about a user, knowledge that the user has
       been highly proofed or issued a strong token could provide more
       information about the user than was intended. It is recommended that
-      systems in general use the minimum vectors applicable to their use case
-      in order to prevent inadvertent information disclosure.</t>
+      IdPs send and RPs request only the information necessary for their use
+      case in order to prevent inadvertent information disclosure.</t>
     </section>
   </middle>
 
@@ -1024,13 +975,14 @@
     <section anchor="default-components"
              title="Vectors of Trust Default Component Value Definitions">
       <t>The following general-purpose component definitions MAY be used when
-      a more specific set is unavailable. These component values are
-      referenced in a trustmark definition defined by [[ this document URL
-      ]].</t>
+      a more specific set is unavailable. This document defines a trust
+      framework for these component values. This trust framework referenced in
+      a trustmark URI of [[ this document URL ]].</t>
 
       <t>Extensions of this specification SHOULD define their own component
       values as described in <xref target="extension"/>. Where possible,
-      extensions MAY re-use specific values here.</t>
+      extensions MAY re-use specific values and definitions as listed here,
+      but those specific values MUST be re-listed.</t>
 
       <section title="Identity Proofing">
         <t>The identity proofing component of this vector definition
@@ -1080,8 +1032,9 @@
             <t hangText="Ce">Cryptographic proof of key possession using
             asymmetric key</t>
 
-            <t hangText="Cf">Sealed hardware token / trusted biometric /
-            TPM-backed keys</t>
+            <t hangText="Cf">Sealed hardware token / TPM-backed keys</t>
+
+            <t hangText="Cg">Locally verified biometric</t>
           </list></t>
       </section>
 
@@ -1135,9 +1088,20 @@
       <t>-09</t>
 
       <t><list style="symbols">
+          <t>Various fixes to respond to AD review.</t>
+
           <t>Added introspection response IANA registration.</t>
 
           <t>Cleaned up IANA entries.</t>
+
+          <t>Removed confusing per-IdP trustmark and discovery sections.
+          Adopted single trustmark definition instead.</t>
+
+          <t>Added definition of identity federation.</t>
+
+          <t>Added definition of identity proofing.</t>
+
+          <t>Added examples to component sections.</t>
         </list></t>
 
       <t>-08</t>
