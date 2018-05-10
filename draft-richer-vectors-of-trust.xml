@@ -261,12 +261,12 @@
       such as <spanx style="verb">a</spanx>, <spanx style="verb">b</spanx>,
       <spanx style="verb">c</spanx> for normal values to differentiate between
       these types of options. Another system could have a base category with a
-      numeric value with additonal details provided by letter values. </t>
+      numeric value with additional details provided by letter values. </t>
 
       <t>Each component MAY be repeated with multiple different values within
       a single vector (see <xref target="Serialization"/> for details). The
       same component and value combination MUST NOT be repeated within a
-      single vector. A trust framework MAY define additional restructions on
+      single vector. A trust framework MAY define additional restrictions on
       combinations of values.</t>
 
       <t>Regardless of the type of value indicator used, the values assigned
@@ -529,7 +529,7 @@
       purview of the IdP and details are outside the scope of this
       specification.</t>
 
-      <t>Future specifications MAY define alternative ways for an RP to reqest
+      <t>Future specifications MAY define alternative ways for an RP to retest
       vector component values from an IdP.</t>
 
       <section anchor="RequestingOIDC" title="In OpenID Connect">
@@ -738,7 +738,7 @@
 
             <t>Description: Vector of Trust request</t>
 
-            <t>Parmater usage location: authorization request, token
+            <t>Parameter usage location: authorization request, token
             request</t>
 
             <t>Change Controller: IESG</t>
@@ -806,7 +806,7 @@
       be interpreted by the RP in the context of the trust framework defined
       by that trustmark. Different trust frameworks can apply different
       interpretations to the same component value, much as was the case with
-      LoA. Therefore, an RP interpreting a component value in the the wrong
+      LoA. Therefore, an RP interpreting a component value in the wrong
       context could mistakenly accept or reject a request. In order to avoid
       this mistake, RPs need to reject vectors that are defined in trust
       frameworks that they do not understand how to interpret properly.</t>
@@ -818,7 +818,7 @@
       an RP's security decision process. These policies and associated
       practices are to be agreed upon by the IdP and RP, and they should be
       expressed in detail in an associated human-readable trust framework
-      document vailable at the trustmark URI.</t>
+      document available at the trustmark URI.</t>
     </section>
 
     <section anchor="Privacy" title="Privacy Considerations">
@@ -989,8 +989,8 @@
         represents increasing scrutiny during the proofing process. Higher
         levels are largely subsumptive of lower levels, such that <spanx
         style="verb">P2</spanx> fulfills requirements for <spanx style="verb">P1</spanx>,
-        etc. Mutltiple distinct values from this category MUST NOT be used in
-        a single transaction.</t>
+        etc. Multiple distinct values from this category MUST NOT be used in a
+        single transaction.</t>
 
         <t><list style="hanging">
             <t hangText="P0">No proofing is done, data is not guaranteed to be
