@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-richer-vectors-of-trust-09"
+<rfc category="std" docName="draft-richer-vectors-of-trust-10"
      ipr="trust200902">
   <front>
     <title abbrev="vectors-of-trust">Vectors of Trust</title>
@@ -344,7 +344,7 @@
         known by the RP as a side effect of processing an identity assertion,
         this dimension is still very useful when the RP <xref
         target="RequestingVector">requests a login</xref> and when describing
-        the <xref target="discovery">capabilities of an IdP</xref>.</t>
+        the capabilities of an IdP.</t>
 
         <t>This dimension uses the <spanx style="verb">A</spanx> demarcator
         and a level value, such as <spanx style="verb">Aa</spanx>, <spanx
@@ -559,12 +559,12 @@
         acceptable VoT values by including the corresponding <spanx
         style="verb">AuthenticationContextDeclRef</spanx> URIs together with
         an <spanx style="verb">AuthenticationContextClassRef</spanx>
-        corresponding to the <xref target="trustmark">trustmark</xref>. The
+        corresponding to the <xref target="Trustmark">trustmark</xref>. The
         processing rules in <xref target="SAML"/> apply.</t>
       </section>
     </section>
 
-    <section anchor="trustmark" title="Trustmarks">
+    <section anchor="Trustmark" title="Trustmarks">
       <t>A trustmark is a URI that references a specific set of vector values
       as defined by a trust framework. This URI MUST point to a human-readable
       document that describes what components and values are valid, how they
@@ -626,7 +626,7 @@
       limit a given component category to a single value per transaction.</t>
 
       <t>Extensions and implementations of this specification MUST be
-      referenced by a unique <xref target="trustmark">trustmark URI</xref> to
+      referenced by a unique <xref target="Trustmark">trustmark URI</xref> to
       allow RPs to differentiate between different trust frameworks.</t>
     </section>
 
@@ -979,10 +979,10 @@
       framework for these component values. This trust framework referenced in
       a trustmark URI of [[ this document URL ]].</t>
 
-      <t>Extensions of this specification SHOULD define their own component
-      values as described in <xref target="extension"/>. Where possible,
-      extensions MAY re-use specific values and definitions as listed here,
-      but those specific values MUST be re-listed.</t>
+      <t>Extensions and implementations of this specification SHOULD define
+      their own component values as described in <xref target="extension"/>.
+      Where possible, extensions MAY re-use specific values and definitions as
+      listed here, but those specific values MUST be re-listed.</t>
 
       <section title="Identity Proofing">
         <t>The identity proofing component of this vector definition
