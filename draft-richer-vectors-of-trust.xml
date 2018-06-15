@@ -172,7 +172,7 @@
             component values.</t>
 
             <t hangText="Trustmark Provider">Defines the trust framework
-            referenced by its trustmar, and can verify that a given system
+            referenced by its trustmark, and can verify that a given system
             (such as an identity provider) is both capable of asserting and
             allowed to assert the vector component values it is claiming.</t>
 
@@ -620,7 +620,7 @@
         determining whether the proposed registration duplicates existing
         functionality, whether it is likely to be of general applicability or
         whether it is useful only for limited applications (note that either
-        is permissable though the former is to be preferred), and whether the
+        is permissible though the former is to be preferred), and whether the
         registration description is clear.</t>
 
         <t>Registration requests sent to the vot@ietf.org mailing list for
@@ -1002,7 +1002,7 @@
             asymmetric key</t>
 
             <t hangText="Cf">Sealed hardware token / keys stored in a trusted
-            platform module </t>
+            platform module</t>
 
             <t hangText="Cg">Locally verified biometric</t>
           </list></t>
