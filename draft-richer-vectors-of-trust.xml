@@ -256,16 +256,21 @@
       <t>The value for a given component within a vector of trust is defined
       by its demarcator character followed by a single digit or lowercase
       ASCII letter in the range <spanx style="verb">[0-9a-z]</spanx>.
-      Categories which have a natural ordering SHOULD use digits, with larger
-      digits indicating stronger assertions than smaller digits. Categories
-      which do not have a natural ordering, or which can have an ambiguous
-      ordering, SHOULD use letters. Categories MAY use both letters and digits
-      simultaneously. For example, a category could define <spanx
-      style="verb">0</spanx> as meaning "no statement is made" while using
-      letters such as <spanx style="verb">a</spanx>, <spanx style="verb">b</spanx>,
-      <spanx style="verb">c</spanx> for normal values to indicate specific
-      options. Another system could have an ordered base set of digits with
-      additional details provided by letters.</t>
+      Categories which have a natural ordering SHOULD prefer digits, with
+      larger digits indicating stronger assertions than smaller digits.
+      Categories which do not have a natural ordering, or which can have an
+      ambiguous ordering, SHOULD prefer letters. Note that while letters could
+      also imply order, they can also more naturally be used mnemonically.
+      Trust frameworks MAY use any possible values within a category without
+      the need for them to be contiguous.</t>
+
+      <t>Categories MAY use both letters and digits simultaneously. For
+      example, a category could define <spanx style="verb">0</spanx> as
+      meaning "no statement is made" while using letters such as <spanx
+      style="verb">a</spanx>, <spanx style="verb">b</spanx>, <spanx
+      style="verb">c</spanx> for normal values to indicate specific options.
+      Another system could have an ordered base set of digits with additional
+      details provided by letters.</t>
 
       <t>Each component MAY be repeated with multiple different values within
       a single vector, representing the logical AND of the values (see <xref
@@ -765,10 +770,10 @@
       <t>The vector of trust value needs to be cryptographically protected in
       transit between parties, such as by using TLS as described in <xref
       target="BCP195"/>. The vector of trust value must be associated with a
-      trustmark by the RP processing the vector. By carrying both the vector
-      value and the trustmark URL, a signed OpenID Connect ID Token or a
-      similarly signed assertion from another protocol would fulfil this
-      requirement.</t>
+      trustmark by the RP processing the vector. A signed OpenID Connect ID
+      Token or a similarly signed assertion from another protocol would fulfil
+      this requirement by carrying both the vector value and the trustmark URL
+      as claims.</t>
 
       <t>The vector value is always associated with a trustmark and needs to
       be interpreted by the RP in the context of the trust framework defined
