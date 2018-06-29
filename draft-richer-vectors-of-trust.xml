@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-richer-vectors-of-trust-11"
+<rfc category="std" docName="draft-richer-vectors-of-trust-12"
      ipr="trust200902">
   <front>
     <title abbrev="vectors-of-trust">Vectors of Trust</title>
@@ -50,7 +50,7 @@
       </address>
     </author>
 
-    <date day="18" month="May" year="2018"/>
+    <date day="29" month="June" year="2018"/>
 
     <abstract>
       <t>This document defines a mechanism for describing and signaling
