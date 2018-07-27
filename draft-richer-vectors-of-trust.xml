@@ -423,7 +423,7 @@
         is omitted, the vector is making no claim for that component. No
         default values are assumed for a missing component category.</t>
 
-        <t>Vector values MUST be communicated along with of a <xref
+        <t>Vector values MUST be communicated along with a <xref
         target="Trustmark">trustmark URL</xref> to give the components and
         component values context. The trustmark MUST be cryptographically
         bound to the vector value, such as the two values being carried
@@ -950,7 +950,8 @@
       <t>The following general-purpose component definitions MAY be used when
       a more specific set is unavailable. This document defines a trust
       framework for these component values. The trustmark URL of this trust
-      framework is [[ this document URL ]].</t>
+      framework is [[ this document URL ]]. All normative requirements
+      following in this section apply to this trust framework alone.</t>
 
       <t>Extensions and implementations of this specification SHOULD define
       their own component values as described in <xref target="extension"/>.
@@ -1060,6 +1061,15 @@
     </section>
 
     <section title="Document History">
+      <t>-13</t>
+
+      <t><list style="symbols">
+          <t>Added note that normative requirements in appendix apply only to
+          the appendix.</t>
+
+          <t>Various minor cleanups.</t>
+        </list></t>
+
       <t>-12</t>
 
       <t><list style="symbols">
