@@ -114,10 +114,10 @@
       attribute metadata descriptions. This method of measurement gives more
       actionable data and expressiveness than an LoA, but is still relatively
       easy for the RP to process. It is anticipated that VoT can be used
-      alongside more detailed attribute metadata systems as has that proposed
-      by <xref target="NISTIR-8112">NISITIR 8112</xref>. The RP can use the
-      vector value for most basic decisions but be able to query the IdP for
-      additional attribute metadata where needed. Furthermore, it is
+      alongside more detailed attribute metadata systems, such as the one
+      proposed by <xref target="NISTIR-8112">NISITIR 8112</xref>. The RP can
+      use the vector value for most basic decisions but be able to query the
+      IdP for additional attribute metadata where needed. Furthermore, it is
       anticipated that some trust frameworks will provide a simple mapping
       between certain sets of vector values to LoAs, for RPs that do not have
       a need for the vector's more fine-grained detail. In such systems, an RP
@@ -467,7 +467,8 @@
         <t>For example, assume that for the given trustmark, the body of an ID
         token claiming "pseudonymous, proof of shared key, signed back-channel
         verified token, and no claim made toward credential management" could
-        look like this JSON object payload of the ID token.</t>
+        look like this <xref target="RFC8259">JSON object</xref> payload of
+        the ID token.</t>
 
         <figure>
           <artwork><![CDATA[{ 
@@ -508,15 +509,16 @@
         <t>In <xref target="OpenID">OpenID Connect</xref>, the client MAY
         request a partial set of acceptable VoT values with the <spanx
         style="verb">vtr</spanx> (vector of trust request) claim request as
-        part of the Request Object. The value of this field is an array of
-        JSON strings, each string identifying an acceptable set of vector
-        components. The component values within each vector are ANDed together
-        while the separate vectors are ORed together. For example, a list of
-        vectors in the form {{ NOTE TO RFC EDITOR: change outer double quotes
-        to single quotes in text version }} <spanx style="verb">["P1.Cb.Cc.Ab", "Ce.Ab"]</spanx>
-        is stating that either the full set of "P1 AND Cb AND Cc AND Ab"
-        simultaneously OR the full set of "Ce AND Ab" simultaneously are
-        acceptable to this RP for this transaction.</t>
+        part of the Request Object. The value of this field is a <xref
+        target="RFC8259">JSON array of strings</xref>, each string identifying
+        an acceptable set of vector components. The component values within
+        each vector are ANDed together while the separate vectors are ORed
+        together. For example, a list of vectors in the form {{ NOTE TO RFC
+        EDITOR: change outer double quotes to single quotes in text version }}
+        <spanx style="verb">["P1.Cb.Cc.Ab", "Ce.Ab"]</spanx> is stating that
+        either the full set of "P1 AND Cb AND Cc AND Ab" simultaneously OR the
+        full set of "Ce AND Ab" simultaneously are acceptable to this RP for
+        this transaction.</t>
 
         <t>Vector request values MAY omit components, indicating that any
         value is acceptable for that component category, including omission of
@@ -529,16 +531,16 @@
     </section>
 
     <section anchor="Trustmark" title="Trustmarks">
-      <t>A trustmark is a URL that references a specific set of vector values
-      as defined by a trust framework. This URL MUST point to a human-readable
-      document that describes what components and values are valid, how they
-      are used together, and what practices the component values represent
-      within the trust framework. The contents of the trustmark URL MUST be
-      reachable by the operators or implementors of the RP. The URL SHOULD be
-      stable over time for a given trust framework to allow RPs to process
-      incoming vectors in a consistent fashion. New versions of a trust
-      framework that require different processing rules SHOULD use a different
-      trustmark URL.</t>
+      <t>A trustmark is an HTTPS URL that references a specific set of vector
+      values as defined by a trust framework. This URL MUST point to a
+      human-readable document that describes what components and values are
+      valid, how they are used together, and what practices the component
+      values represent within the trust framework. The contents of the
+      trustmark URL MUST be reachable by the operators or implementors of the
+      RP. The URL MUST be stable over time for a given trust framework to
+      allow RPs to process incoming vectors in a consistent fashion. New
+      versions of a trust framework that require different processing rules
+      MUST use a different trustmark URL.</t>
 
       <t>For example, [[this document URL]] is used as the trustmark to
       reference the values defined in <xref target="default-components"/>.</t>
@@ -583,12 +585,12 @@
       documents, even though in both cases the <spanx style="verb">P</spanx>
       component is used for identity proofing in some fashion.</t>
 
-      <t>Trust frameworks that implement specification SHOULD choose either a
-      numerical ordering or a group category approach to component values as
-      described in <xref target="Components"/>, though combinations of both
-      types MAY be used. Implementations of this specification MUST specify
-      whether multiple values are allowed for each category, and while any
-      component category is generally allowed to have multiple distinct
+      <t>Trust frameworks that implement this specification SHOULD choose
+      either a numerical ordering or a group category approach to component
+      values as described in <xref target="Components"/>, though combinations
+      of both types MAY be used. Implementations of this specification MUST
+      specify whether multiple values are allowed for each category, and while
+      any component category is generally allowed to have multiple distinct
       values, a specific definition of a set of values in an extension MAY
       limit a given component category to a single value per transaction. It
       is RECOMMENDED that trust frameworks use a <spanx style="verb">0</spanx>
@@ -771,9 +773,9 @@
       transit between parties, such as by using TLS as described in <xref
       target="BCP195"/>. The vector of trust value must be associated with a
       trustmark by the RP processing the vector. A signed OpenID Connect ID
-      Token or a similarly signed assertion from another protocol would fulfil
-      this requirement by carrying both the vector value and the trustmark URL
-      as claims.</t>
+      Token or a similarly signed assertion from another protocol would
+      fulfill this requirement by carrying both the vector value and the
+      trustmark URL as claims.</t>
 
       <t>The vector value is always associated with a trustmark and needs to
       be interpreted by the RP in the context of the trust framework defined
@@ -996,7 +998,8 @@
             <t hangText="Ca">Simple session HTTP cookies (with nothing
             else)</t>
 
-            <t hangText="Cb">Known device</t>
+            <t hangText="Cb">Known device such as indicated through device
+            posture or device management systems</t>
 
             <t hangText="Cc">Shared secret such as a username and password
             combination</t>
@@ -1066,6 +1069,10 @@
       <t><list style="symbols">
           <t>Added note that normative requirements in appendix apply only to
           the appendix.</t>
+
+          <t>Clarified that trustmark URLs need to be stable over time.</t>
+
+          <t>Required trustmark URLs to be served over HTTPS.</t>
 
           <t>Various minor cleanups.</t>
         </list></t>
