@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-richer-vectors-of-trust-13"
+<rfc category="std" docName="draft-richer-vectors-of-trust-14"
      ipr="trust200902">
   <front>
     <title abbrev="vectors-of-trust">Vectors of Trust</title>
@@ -50,7 +50,7 @@
       </address>
     </author>
 
-    <date day="1" month="August" year="2018"/>
+    <date day="6" month="August" year="2018"/>
 
     <abstract>
       <t>This document defines a mechanism for describing and signaling
@@ -246,12 +246,15 @@
       in a natural manner. Demarcators for components MUST be registered as
       described in <xref target="IANA"/>. It is anticipated that trust
       framework definitions will use this registry to define specialized
-      components, though it is RECOMMENDED that trust frameworks re-use
-      existing components categories wherever possible. Different trust
-      frameworks SHOULD use the same component for similar information, but
-      since the processing for all vector values is contextual to a trust
-      framework, the exact semantics of interpreting a component will vary
-      based on the trust framework in use.</t>
+      components, but it is RECOMMENDED that trust frameworks re-use existing
+      components categories wherever possible. The same demarcator MUST NOT be
+      used for two different dimensions, and different trust frameworks SHOULD
+      use the same demarcator for similar information. It is further
+      anticipated that there will be relatively few component dimensions over
+      time, and this specification defines four general-purpose categories in
+      this section. Note that since the processing for all vector values is
+      contextual to a trust framework, the exact semantics of interpreting a
+      component will vary based on the trust framework in use.</t>
 
       <t>The value for a given component within a vector of trust is defined
       by its demarcator character followed by a single digit or lowercase
@@ -568,15 +571,15 @@
       existing category definitions where possible. Extensions MAY create
       additional categories where needed by using the registry defined in
       <xref target="IANA"/>. The registry encourages re-use and discovery of
-      existing categories across different implementations. In other words,
-      the <spanx style="verb">P</spanx> category in another framework SHOULD
-      be used for identity proofing and related information.</t>
+      existing categories across different trust frameworks. For example, the
+      <spanx style="verb">P</spanx> category in another framework SHOULD be
+      used for identity proofing and related information.</t>
 
       <t>The values of components such as those defined in <xref
       target="default-components"/> are intended to be contextual to the
       defining trust document. While this specification's component values are
       intended to be general-purpose and extensions MAY re-use the values and
-      their definitions, implementations MUST define all allowable values. As
+      their definitions, trust frameworks MUST define all allowable values. As
       these values are always interpreted in the context of a trustmark, these
       values are not recorded in a central registry. Consequently, a <spanx
       style="verb">P1</spanx> value from one framework and a <spanx
@@ -588,19 +591,19 @@
       <t>Trust frameworks that implement this specification SHOULD choose
       either a numerical ordering or a group category approach to component
       values as described in <xref target="Components"/>, though combinations
-      of both types MAY be used. Implementations of this specification MUST
-      specify whether multiple values are allowed for each category, and while
-      any component category is generally allowed to have multiple distinct
-      values, a specific definition of a set of values in an extension MAY
-      limit a given component category to a single value per transaction. It
-      is RECOMMENDED that trust frameworks use a <spanx style="verb">0</spanx>
-      value to indicate an empty or null condition for a given category (for
-      example, no proofing being done or no authentication token being
-      used).</t>
+      of both types MAY be used. Trust frameworks MUST specify whether
+      multiple values are allowed for each category, and while any component
+      category is generally allowed to have multiple distinct values, a
+      specific definition of a set of values in an extension MAY limit a given
+      component category to a single value per transaction. It is RECOMMENDED
+      that trust frameworks use a <spanx style="verb">0</spanx> value to
+      indicate an empty or null condition for a given category (for example,
+      no proofing being done or no authentication token being used).</t>
 
-      <t>Extensions and implementations of this specification MUST be
-      referenced by a unique <xref target="Trustmark">trustmark URL</xref> to
-      allow RPs to differentiate between different trust frameworks.</t>
+      <t>All trust frameworks that extend and implement this specification
+      MUST be referenced by a unique <xref target="Trustmark">trustmark
+      URL</xref> to allow RPs to differentiate between different trust
+      frameworks.</t>
     </section>
 
     <section anchor="Acknowledgements" title="Acknowledgements">
@@ -624,11 +627,11 @@
         policy documented in <xref target="RFC8126"/>.</t>
 
         <t>Criteria that should be applied by the Designated Experts includes
-        determining whether the proposed registration duplicates existing
-        functionality, whether it is likely to be of general applicability or
-        whether it is useful only for limited applications (note that either
-        is permissible though the former is to be preferred), and whether the
-        registration description is clear.</t>
+        determining whether the proposed registration is distinct enough from
+        existing entries to warrant registration, whether it is likely to be
+        of general applicability or whether it is useful only for limited
+        applications (note that either is permissible though the former is to
+        be preferred), and whether the registration description is clear.</t>
 
         <t>Registration requests sent to the vot@ietf.org mailing list for
         review should use an appropriate subject (e.g., "Request to register
@@ -955,10 +958,11 @@
       framework is [[ this document URL ]]. All normative requirements
       following in this section apply to this trust framework alone.</t>
 
-      <t>Extensions and implementations of this specification SHOULD define
-      their own component values as described in <xref target="extension"/>.
-      Where possible, extensions MAY re-use specific values and definitions as
-      listed here, but those specific values MUST be re-listed.</t>
+      <t>Other trust frameworks that extend and implement this specification
+      SHOULD define their own component values as described in <xref
+      target="extension"/>. Where possible, extensions MAY re-use specific
+      values and definitions as listed here, but those specific values MUST be
+      re-listed.</t>
 
       <section title="Identity Proofing">
         <t>The identity proofing component of this vector definition
@@ -1064,6 +1068,14 @@
     </section>
 
     <section title="Document History">
+      <t>-14</t>
+
+      <t><list style="symbols">
+          <t>Clarified use of IANA registries.</t>
+
+          <t>Removed fuzzy "implementers" language.</t>
+        </list></t>
+
       <t>-13</t>
 
       <t><list style="symbols">
